@@ -433,7 +433,7 @@ export default function ProfileViewPage() {
                         <CurrencyDollarIcon className="h-5 w-5 text-green-600 mr-2" />
                         <span className="text-sm text-gray-600">Preço Médio</span>
                       </div>
-                      <span className="text-lg font-semibold text-gray-900">Kz {stats.avgPrice.toFixed(2)}</span>
+                      <span className="text-lg font-semibold text-gray-900">Kz {typeof stats.avgPrice === 'number' ? stats.avgPrice.toFixed(2) : parseFloat(String(stats.avgPrice || '0')).toFixed(2)}</span>
                     </div>
                   </div>
                 </div>

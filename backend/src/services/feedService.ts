@@ -1,6 +1,7 @@
 import Job from '../models/Job';
 import Event from '../models/Event';
 import Mentorship from '../models/Mentorship';
+import { serializeEvent, serializeMentorship } from '../utils/serializeHelpers';
 import FeedItem from '../models/FeedItem';
 import Profile from '../models/Profile';
 import redis from '../config/redis';
@@ -135,11 +136,12 @@ export const generateFeed = async (userId?: string, page: number = 1, limit: num
   for (const event of events) {
     const feedItem = feedItems.find((fi) => fi.type === 'EVENT' && fi.itemId === event.id);
     if (feedItem) {
+      const serializedEvent = serializeEvent(event);
       feedData.push({
         id: event.id,
         type: 'EVENT',
-        content: event,
-        priority: calculatePriority({ ...feedItem.toJSON(), type: 'EVENT', ...event.toJSON() }, userProfile),
+        content: serializedEvent,
+        priority: calculatePriority({ ...feedItem.toJSON(), type: 'EVENT', ...serializedEvent }, userProfile),
         createdAt: event.createdAt,
       });
     }
@@ -148,11 +150,12 @@ export const generateFeed = async (userId?: string, page: number = 1, limit: num
   for (const mentorship of mentorships) {
     const feedItem = feedItems.find((fi) => fi.type === 'MENTORSHIP' && fi.itemId === mentorship.id);
     if (feedItem) {
+      const serializedMentorship = serializeMentorship(mentorship);
       feedData.push({
         id: mentorship.id,
         type: 'MENTORSHIP',
-        content: mentorship,
-        priority: calculatePriority({ ...feedItem.toJSON(), type: 'MENTORSHIP', ...mentorship.toJSON() }, userProfile),
+        content: serializedMentorship,
+        priority: calculatePriority({ ...feedItem.toJSON(), type: 'MENTORSHIP', ...serializedMentorship }, userProfile),
         createdAt: mentorship.createdAt,
       });
     }

@@ -6,6 +6,7 @@ import { AuthRequest } from '../middleware/auth';
 import { AppError } from '../utils/AppError';
 import AuditLog from '../models/AuditLog';
 import { Op } from 'sequelize';
+import { serializeMentorship, serializeMentorships } from '../utils/serializeHelpers';
 
 export const createMentorship = async (
   req: AuthRequest,
@@ -61,7 +62,7 @@ export const createMentorship = async (
 
     res.status(201).json({
       success: true,
-      data: { mentorship },
+      data: { mentorship: serializeMentorship(mentorship) },
     });
   } catch (error) {
     next(error);
@@ -108,7 +109,7 @@ export const getMentorships = async (
     res.json({
       success: true,
       data: {
-        mentorships,
+        mentorships: serializeMentorships(mentorships),
         pagination: {
           total: count,
           page: Number(page),
@@ -146,7 +147,7 @@ export const getMentorship = async (
 
     res.json({
       success: true,
-      data: { mentorship },
+      data: { mentorship: serializeMentorship(mentorship) },
     });
   } catch (error) {
     next(error);
@@ -215,7 +216,7 @@ export const updateMentorship = async (
 
     res.json({
       success: true,
-      data: { mentorship },
+      data: { mentorship: serializeMentorship(mentorship) },
     });
   } catch (error) {
     next(error);

@@ -233,7 +233,7 @@ const FeedCard: React.FC<{ item: FeedItem }> = ({ item }) => {
                       ) : (
                         <>
                           <CurrencyDollarIcon className="h-3 w-3 mr-1" />
-                          Kz {event.price.toFixed(2)}
+                          Kz {typeof event.price === 'number' ? event.price.toFixed(2) : parseFloat(String(event.price || '0')).toFixed(2)}
                         </>
                       )}
                     </span>
@@ -292,7 +292,7 @@ const FeedCard: React.FC<{ item: FeedItem }> = ({ item }) => {
                   {mentorship.price !== undefined && (
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                       <CurrencyDollarIcon className="h-3 w-3 mr-1" />
-                      Kz {mentorship.price.toFixed(2)}
+                      Kz {typeof mentorship.price === 'number' ? mentorship.price.toFixed(2) : parseFloat(String(mentorship.price || '0')).toFixed(2)}
                     </span>
                   )}
                   {mentorship.duration && (

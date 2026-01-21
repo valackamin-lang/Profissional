@@ -265,7 +265,11 @@ export default function MentorshipsPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {mentorships.map((mentorship) => {
-                const price = typeof mentorship.price === 'number' ? mentorship.price : parseFloat(mentorship.price || '0');
+                const price = typeof mentorship.price === 'number' 
+                  ? mentorship.price 
+                  : (typeof mentorship.price === 'string' 
+                    ? parseFloat(mentorship.price) || 0 
+                    : Number(mentorship.price) || 0);
                 const occupancyRate = mentorship.maxStudents 
                   ? Math.round(((mentorship.currentStudents || 0) / mentorship.maxStudents) * 100) 
                   : 0;
@@ -323,7 +327,7 @@ export default function MentorshipsPage() {
                         <div>
                           <p className="text-xs text-gray-600">Preço</p>
                           <p className="text-xl font-bold text-primary-700">
-                            Kz {price.toFixed(0)}
+                            Kz {typeof price === 'number' && !isNaN(price) ? price.toFixed(0) : '0'}
                           </p>
                         </div>
                         <div className="text-right">

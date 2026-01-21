@@ -6,6 +6,7 @@ import { AuthRequest } from '../middleware/auth';
 import { AppError } from '../utils/AppError';
 import AuditLog from '../models/AuditLog';
 import { Op } from 'sequelize';
+import { serializeEvent, serializeEvents } from '../utils/serializeHelpers';
 
 export const createEvent = async (
   req: AuthRequest,
@@ -62,7 +63,7 @@ export const createEvent = async (
 
     res.status(201).json({
       success: true,
-      data: { event },
+      data: { event: serializeEvent(event) },
     });
   } catch (error) {
     next(error);
@@ -106,7 +107,7 @@ export const getEvents = async (
     res.json({
       success: true,
       data: {
-        events,
+        events: serializeEvents(events),
         pagination: {
           total: count,
           page: Number(page),
@@ -144,7 +145,7 @@ export const getEvent = async (
 
     res.json({
       success: true,
-      data: { event },
+      data: { event: serializeEvent(event) },
     });
   } catch (error) {
     next(error);
@@ -214,7 +215,7 @@ export const updateEvent = async (
 
     res.json({
       success: true,
-      data: { event },
+      data: { event: serializeEvent(event) },
     });
   } catch (error) {
     next(error);
