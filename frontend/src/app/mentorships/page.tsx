@@ -14,7 +14,6 @@ import {
   MagnifyingGlassIcon,
   FunnelIcon,
   ChartBarIcon,
-  StarIcon,
 } from '@heroicons/react/24/outline';
 
 interface Mentorship {

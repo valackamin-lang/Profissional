@@ -4,6 +4,7 @@ import { ProtectedRoute } from '../../components/ProtectedRoute';
 import { Header } from '../../components/Header';
 import { useAuth } from '../../contexts/AuthContext';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import api from '../../lib/api';
 
 export default function DashboardPage() {
@@ -144,7 +145,7 @@ export default function DashboardPage() {
                     <p className="text-sm text-gray-600">Gerencie estudantes inscritos em suas mentorias</p>
                   </Link>
                 )}
-                {(user?.role === 'COMPANY' || user?.role === 'PARTNER') && (
+                {(user?.role === 'PARTNER') && (
                   <Link
                     href="/portal/company"
                     className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow"
@@ -153,7 +154,7 @@ export default function DashboardPage() {
                     <p className="text-sm text-gray-600">Gerencie candidaturas para suas vagas</p>
                   </Link>
                 )}
-                {(user?.role === 'PARTNER' || user?.role === 'COMPANY') && (
+                {(user?.role === 'PARTNER') && (
                   <Link
                     href="/portal/organizer"
                     className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow"

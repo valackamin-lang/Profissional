@@ -11,7 +11,6 @@ import {
   UserGroupIcon,
   MagnifyingGlassIcon,
   FunnelIcon,
-  ShieldCheckIcon,
   XCircleIcon,
   CheckCircleIcon,
   EyeIcon,

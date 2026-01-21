@@ -31,6 +31,16 @@ app.use('/api', apiRateLimiter);
 // Serve uploaded files
 app.use('/uploads', express.static('uploads'));
 
+// Root route
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'FORGETECH Professional API',
+    version: '1.0.0',
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({

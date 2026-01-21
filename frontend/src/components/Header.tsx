@@ -120,7 +120,7 @@ export const Header: React.FC = () => {
                   </Link>
                 </>
               )}
-              {(user.role === 'COMPANY' || user.role === 'PARTNER') && (
+              {(user.role === 'PARTNER') && (
                 <Link
                   href="/portal/company"
                   className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-100"
@@ -128,7 +128,7 @@ export const Header: React.FC = () => {
                   Portal da Empresa
                 </Link>
               )}
-              {(user.role === 'PARTNER' || user.role === 'COMPANY') && (
+              {(user.role === 'PARTNER') && (
                 <Link
                   href="/portal/organizer"
                   className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-100"

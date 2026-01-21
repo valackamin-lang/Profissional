@@ -13,7 +13,6 @@ import {
   AcademicCapIcon,
   FunnelIcon,
   XCircleIcon,
-  CheckCircleIcon,
   EyeIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
@@ -36,6 +35,7 @@ interface ContentItem {
     lastName?: string;
   };
   mentor?: {
+    companyName?: string;
     firstName?: string;
     lastName?: string;
   };

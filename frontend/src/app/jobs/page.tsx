@@ -10,7 +10,6 @@ import {
   MapPinIcon,
   CurrencyDollarIcon,
   BriefcaseIcon,
-  CalendarIcon,
   MagnifyingGlassIcon,
   FunnelIcon,
   BuildingOfficeIcon,
@@ -133,7 +132,7 @@ export default function JobsPage() {
                 <h1 className="text-4xl font-bold text-gray-900 mb-2">Vagas de Emprego</h1>
                 <p className="text-gray-600 text-lg">Encontre oportunidades que combinam com você</p>
               </div>
-              {(user?.role === 'COMPANY' || user?.role === 'ADMIN') && (
+              {(user?.role === 'PARTNER' || user?.role === 'ADMIN') && (
                 <Link
                   href="/jobs/create"
                   className="px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 shadow-lg hover:shadow-xl transition-all font-medium flex items-center space-x-2"
@@ -259,7 +258,7 @@ export default function JobsPage() {
               </div>
               <p className="text-xl font-semibold text-gray-900 mb-2">Nenhuma vaga encontrada</p>
               <p className="text-gray-600 mb-4">Tente ajustar os filtros ou criar uma nova vaga</p>
-              {(user?.role === 'COMPANY' || user?.role === 'ADMIN') && (
+              {(user?.role === 'PARTNER' || user?.role === 'ADMIN') && (
                 <Link
                   href="/jobs/create"
                   className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"

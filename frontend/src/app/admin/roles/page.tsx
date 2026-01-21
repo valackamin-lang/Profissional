@@ -11,7 +11,6 @@ import {
   PencilIcon,
   TrashIcon,
   XMarkIcon,
-  CheckIcon,
 } from '@heroicons/react/24/outline';
 
 interface Role {
@@ -291,7 +290,7 @@ export default function RolesPage() {
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         required
-                        disabled={editingRole && ['ADMIN', 'STUDENT', 'MENTOR', 'PARTNER'].includes(editingRole.name)}
+                        disabled={!!(editingRole && ['ADMIN', 'STUDENT', 'MENTOR', 'PARTNER'].includes(editingRole.name))}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:bg-gray-100"
                       />
                     </div>

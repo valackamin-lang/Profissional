@@ -8,12 +8,10 @@ import { useRouter } from 'next/navigation';
 import api from '../../../lib/api';
 import {
   ClockIcon,
-  MagnifyingGlassIcon,
   FunnelIcon,
   ChartBarIcon,
   DocumentTextIcon,
   CurrencyDollarIcon,
-  CalendarIcon,
   UserIcon,
   ArrowDownTrayIcon,
 } from '@heroicons/react/24/outline';

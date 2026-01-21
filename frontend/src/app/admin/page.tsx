@@ -16,10 +16,7 @@ import {
   ChartBarIcon,
   ShieldCheckIcon,
   ExclamationTriangleIcon,
-  CurrencyDollarIcon,
   ClockIcon,
-  MagnifyingGlassIcon,
-  FunnelIcon,
   KeyIcon,
 } from '@heroicons/react/24/outline';
 

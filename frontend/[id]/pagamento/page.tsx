@@ -2,153 +2,21 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-import { paymentService, PaymentTokenResponse } from '@/services/paymentService';
-import { studentService } from '@/services/studentService';
-import { useToast } from '@/hooks/useToast';
-import styled from 'styled-components';
-
-const Container = styled.div`
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  padding: 20px;
-`;
-
-const PaymentCard = styled.div`
-  max-width: 800px;
-  margin: 40px auto;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  padding: 40px;
-`;
-
-const Title = styled.h1`
-  font-size: 28px;
-  font-weight: 700;
-  color: #2d3748;
-  margin-bottom: 10px;
-  text-align: center;
-`;
-
-const Subtitle = styled.p`
-  font-size: 16px;
-  color: #718096;
-  text-align: center;
-  margin-bottom: 30px;
-`;
-
-const CourseInfo = styled.div`
-  background: #f7fafc;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 30px;
-`;
-
-const CourseName = styled.h3`
-  font-size: 20px;
-  font-weight: 600;
-  color: #2d3748;
-  margin-bottom: 10px;
-`;
-
-const CourseAmount = styled.div`
-  font-size: 24px;
-  font-weight: 700;
-  color: #6b46c1;
-`;
-
-const IframeContainer = styled.div`
-  width: 100%;
-  min-height: 600px;
-  border: 2px solid #e2e8f0;
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 20px;
-  background: #f7fafc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Iframe = styled.iframe`
-  width: 100%;
-  height: 600px;
-  border: none;
-`;
-
-const LoadingMessage = styled.div`
-  text-align: center;
-  padding: 40px;
-  color: #718096;
-  font-size: 16px;
-`;
-
-const ErrorMessage = styled.div`
-  background: #fed7d7;
-  color: #c53030;
-  padding: 16px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  text-align: center;
-`;
-
-const SuccessMessage = styled.div`
-  background: #c6f6d5;
-  color: #22543d;
-  padding: 16px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  text-align: center;
-`;
-
-const Button = styled.button`
-  width: 100%;
-  padding: 16px;
-  background: linear-gradient(135deg, #6b46c1, #8b5cf6);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(107, 70, 193, 0.4);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-  }
-`;
-
-const BackButton = styled.button`
-  width: 100%;
-  padding: 12px;
-  background: white;
-  color: #6b46c1;
-  border: 2px solid #6b46c1;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 10px;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: #f7fafc;
-  }
-`;
+import { useAuth } from '../../src/contexts/AuthContext';
+import { paymentService, PaymentTokenResponse } from '../../src/lib/paymentService';
+import { ProtectedRoute } from '../../src/components/ProtectedRoute';
+import { Header } from '../../src/components/Header';
+import {
+  ArrowLeftIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+} from '@heroicons/react/24/outline';
 
 export default function PaymentPage() {
   const params = useParams();
   const router = useRouter();
-  const { user, isAuthenticated } = useAuth();
-  const { showToast, ToastElement } = useToast();
+  const { user } = useAuth();
+  const isAuthenticated = !!user;
   const courseId = params.id as string;
 
   const [loading, setLoading] = useState(false);
@@ -156,7 +24,6 @@ export default function PaymentPage() {
   const [iframeUrl, setIframeUrl] = useState<string | null>(null);
   const [paymentId, setPaymentId] = useState<string | null>(null);
   const [paymentCompleted, setPaymentCompleted] = useState(false);
-  const [courseInfo, setCourseInfo] = useState<{ name: string; price: number } | null>(null);
   const initializedRef = useRef(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -258,39 +125,29 @@ export default function PaymentPage() {
     console.log('✅ Calling generatePurchaseToken...', { 
       courseId, 
       userId: user.id, 
-      userEmail: user.email,
-      userName: user.name 
+      userEmail: user.email
     });
     
     try {
       setLoading(true);
       setError(null);
 
-      // Buscar informações do curso
-      const course = await studentService.getCourse(courseId);
-      setCourseInfo({
-        name: course.name,
-        price: course.price || 0,
-      });
-
       // Gerar token de pagamento
       console.log('Requesting payment token from API...');
       const response = await paymentService.generatePurchaseToken(
-        courseId,
-        user!.id,
-        user!.email,
-        user!.name
+        courseId, // mentorshipId
+        undefined // eventId
       );
 
       console.log('Payment token response:', response);
 
-      if (response.status === 'success' && response.iframe_url && response.payment_id) {
-        console.log('Payment token generated successfully:', { iframeUrl: response.iframe_url, paymentId: response.payment_id });
-        setIframeUrl(response.iframe_url);
-        setPaymentId(response.payment_id);
+      if (response.success && response.data.iframeUrl && response.data.paymentId) {
+        console.log('Payment token generated successfully:', { iframeUrl: response.data.iframeUrl, paymentId: response.data.paymentId });
+        setIframeUrl(response.data.iframeUrl);
+        setPaymentId(response.data.paymentId);
       } else {
         console.error('Payment token generation failed:', response);
-        throw new Error(response.message || 'Erro ao gerar token de pagamento');
+        throw new Error('Erro ao gerar token de pagamento');
       }
     } catch (err: any) {
       console.error('❌ Error initializing payment:', err);
@@ -302,7 +159,6 @@ export default function PaymentPage() {
         stack: err?.stack
       });
       setError(errorMessage);
-      showToast(errorMessage, 'error');
       initializedRef.current = false; // Permitir nova tentativa em caso de erro
     } finally {
       setLoading(false);
@@ -311,14 +167,13 @@ export default function PaymentPage() {
 
   const handlePaymentSuccess = async () => {
     setPaymentCompleted(true);
-    showToast('Pagamento realizado com sucesso!', 'success');
 
     // Verificar status do pagamento após um pequeno delay
     setTimeout(async () => {
       if (paymentId) {
         try {
           const status = await paymentService.checkPaymentStatus(paymentId);
-          if (status.status === 'completed') {
+          if (status.data.payment.status === 'COMPLETED') {
             // Redirecionar para a página do curso após 2 segundos
             setTimeout(() => {
               router.push(`/curso/${courseId}`);
@@ -333,7 +188,6 @@ export default function PaymentPage() {
 
   const handlePaymentFailure = (message: string) => {
     setError(message || 'O pagamento falhou. Tente novamente.');
-    showToast(message || 'O pagamento falhou. Tente novamente.', 'error');
   };
 
   const handleRetry = () => {
@@ -354,61 +208,66 @@ export default function PaymentPage() {
   }
 
   return (
-    <>
-      <Container>
-        <PaymentCard>
-          <Title>Pagamento do Curso</Title>
-          <Subtitle>Complete o pagamento para finalizar sua matrícula</Subtitle>
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+        <Header />
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2 text-center">
+              Pagamento do Curso
+            </h1>
+            <p className="text-base text-gray-600 text-center mb-8">
+              Complete o pagamento para finalizar sua matrícula
+            </p>
 
-          {courseInfo && (
-            <CourseInfo>
-              <CourseName>{courseInfo.name}</CourseName>
-              <CourseAmount>
-                {new Intl.NumberFormat('pt-AO', {
-                  style: 'currency',
-                  currency: 'AOA',
-                }).format(courseInfo.price)}
-              </CourseAmount>
-            </CourseInfo>
-          )}
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6 text-center">
+                {error}
+                <button
+                  onClick={handleRetry}
+                  className="mt-3 w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold"
+                >
+                  Tentar Novamente
+                </button>
+              </div>
+            )}
 
-          {error && (
-            <ErrorMessage>
-              {error}
-              <Button onClick={handleRetry} style={{ marginTop: '10px' }}>
-                Tentar Novamente
-              </Button>
-            </ErrorMessage>
-          )}
+            {paymentCompleted && (
+              <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-6 text-center">
+                Pagamento realizado com sucesso! Redirecionando...
+              </div>
+            )}
 
-          {paymentCompleted && (
-            <SuccessMessage>
-              Pagamento realizado com sucesso! Redirecionando...
-            </SuccessMessage>
-          )}
+            {loading && (
+              <div className="w-full min-h-[600px] border-2 border-gray-200 rounded-xl overflow-hidden mb-5 bg-gray-50 flex items-center justify-center">
+                <div className="text-center text-gray-600 text-base">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
+                  Carregando gateway de pagamento...
+                </div>
+              </div>
+            )}
 
-          {loading && (
-            <IframeContainer>
-              <LoadingMessage>Carregando gateway de pagamento...</LoadingMessage>
-            </IframeContainer>
-          )}
+            {!loading && !error && iframeUrl && !paymentCompleted && (
+              <div className="w-full min-h-[600px] border-2 border-gray-200 rounded-xl overflow-hidden mb-5 bg-gray-50 flex items-center justify-center">
+                <iframe
+                  ref={iframeRef}
+                  src={iframeUrl}
+                  title="Gateway de Pagamento GPO"
+                  allow="payment"
+                  className="w-full h-[600px] border-none"
+                />
+              </div>
+            )}
 
-          {!loading && !error && iframeUrl && !paymentCompleted && (
-            <IframeContainer>
-              <Iframe
-                ref={iframeRef}
-                src={iframeUrl}
-                title="Gateway de Pagamento GPO"
-                allow="payment"
-              />
-            </IframeContainer>
-          )}
-
-          <BackButton onClick={handleBack}>Voltar para o Curso</BackButton>
-        </PaymentCard>
-      </Container>
-      {ToastElement}
-    </>
+            <button
+              onClick={handleBack}
+              className="w-full px-4 py-3 bg-white text-primary-600 border-2 border-primary-600 rounded-xl text-sm font-semibold cursor-pointer mt-3 transition-all hover:bg-gray-50"
+            >
+              Voltar para o Curso
+            </button>
+          </div>
+        </div>
+      </div>
+    </ProtectedRoute>
   );
 }
-

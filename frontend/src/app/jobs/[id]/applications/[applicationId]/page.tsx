@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ProtectedRoute } from '../../../../../components/ProtectedRoute';
 import { Header } from '../../../../../components/Header';
@@ -47,7 +47,6 @@ interface Application {
 
 export default function ApplicationDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const { user } = useAuth();
   const [application, setApplication] = useState<Application | null>(null);
   const [loading, setLoading] = useState(true);

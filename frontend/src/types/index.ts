@@ -18,6 +18,10 @@ export interface Profile {
   avatar?: string;
   resume?: string;
   portfolio?: string;
+  companyName?: string;
+  companyDocument?: string;
+  companyLogo?: string;
+  approvalStatus?: 'PENDING' | 'APPROVED' | 'REJECTED';
   type: ProfileType;
   createdAt: string;
   updatedAt: string;
@@ -33,6 +37,8 @@ export interface Job {
   location?: string;
   type: JobType;
   status: JobStatus;
+  salaryMin?: number;
+  salaryMax?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -45,9 +51,14 @@ export interface Event {
   title: string;
   description: string;
   date: string;
+  eventDate?: string;
   type: EventType;
   videoLink?: string;
   status: EventStatus;
+  price?: number;
+  maxAttendees?: number;
+  currentAttendees?: number;
+  location?: string;
   createdAt: string;
   updatedAt: string;
 }

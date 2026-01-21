@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { ProtectedRoute } from '../../../components/ProtectedRoute';
 import { Header } from '../../../components/Header';
 import { useAuth } from '../../../contexts/AuthContext';
@@ -16,7 +15,6 @@ import {
   CheckCircleIcon,
   XCircleIcon,
   VideoCameraIcon,
-  ClockIcon,
   MapPinIcon,
   CreditCardIcon,
 } from '@heroicons/react/24/outline';
@@ -162,7 +160,6 @@ export default function EventDetailPage() {
   }
 
   const eventDate = new Date(event.eventDate);
-  const isPast = eventDate < new Date();
   const occupancyRate = event.maxAttendees 
     ? Math.round(((event.currentAttendees || 0) / event.maxAttendees) * 100) 
     : 0;
@@ -286,7 +283,7 @@ export default function EventDetailPage() {
                         <div>
                           <p className="text-xs text-gray-600">Preço</p>
                           <p className="font-bold text-green-900">
-                            {event.price === 0 || event.price === '0' ? 'Gratuito' : 
+                            {event.price === 0 ? 'Gratuito' : 
                              `Kz ${typeof event.price === 'number' ? event.price.toFixed(2) : parseFloat(event.price || '0').toFixed(2)}`}
                           </p>
                         </div>

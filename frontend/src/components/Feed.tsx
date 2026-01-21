@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import api from '../lib/api';
-import { FeedItem } from '../types';
+import { FeedItem, Job, Event, Mentorship } from '../types';
 import {
   BriefcaseIcon,
   CalendarIcon,
@@ -123,7 +123,8 @@ const FeedCard: React.FC<{ item: FeedItem }> = ({ item }) => {
 
   const renderContent = () => {
     switch (item.type) {
-      case 'JOB':
+      case 'JOB': {
+        const job = item.content as Job;
         return (
           <Link href={getLink()} className="block group">
             <article className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-primary-300 transition-all duration-200 overflow-hidden">
@@ -135,35 +136,35 @@ const FeedCard: React.FC<{ item: FeedItem }> = ({ item }) => {
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors">
-                        {item.content.title}
+                        {job.title}
                       </h3>
                       <div className="flex items-center mt-1 text-sm text-gray-600">
                         <BuildingOfficeIcon className="h-4 w-4 mr-1" />
-                        <span>{item.content.company}</span>
+                        <span>{job.company}</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <p className="text-gray-700 mb-4 line-clamp-3">
-                  {item.content.description?.substring(0, 250) || item.content.description}
-                  {item.content.description && item.content.description.length > 250 && '...'}
+                  {job.description?.substring(0, 250) || job.description}
+                  {job.description && job.description.length > 250 && '...'}
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-4">
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
-                    {getTypeLabel(item.content.type)}
+                    {getTypeLabel(job.type)}
                   </span>
-                  {item.content.location && (
+                  {job.location && (
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
                       <MapPinIcon className="h-3 w-3 mr-1" />
-                      {item.content.location}
+                      {job.location}
                     </span>
                   )}
-                  {item.content.salaryMin && item.content.salaryMax && (
+                  {job.salaryMin && job.salaryMax && (
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                       <CurrencyDollarIcon className="h-3 w-3 mr-1" />
-                      Kz {item.content.salaryMin.toLocaleString()} - Kz {item.content.salaryMax.toLocaleString()}
+                      Kz {job.salaryMin.toLocaleString()} - Kz {job.salaryMax.toLocaleString()}
                     </span>
                   )}
                 </div>
@@ -181,8 +182,10 @@ const FeedCard: React.FC<{ item: FeedItem }> = ({ item }) => {
             </article>
           </Link>
         );
+      }
 
-      case 'EVENT':
+      case 'EVENT': {
+        const event = item.content as Event;
         return (
           <Link href={getLink()} className="block group">
             <article className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-primary-300 transition-all duration-200 overflow-hidden">
@@ -194,13 +197,13 @@ const FeedCard: React.FC<{ item: FeedItem }> = ({ item }) => {
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors">
-                        {item.content.title}
+                        {event.title}
                       </h3>
-                      {item.content.eventDate && (
+                      {(event.eventDate || event.date) && (
                         <div className="flex items-center mt-1 text-sm text-gray-600">
                           <CalendarIcon className="h-4 w-4 mr-1" />
                           <span>
-                            {new Date(item.content.eventDate).toLocaleDateString('pt-AO', {
+                            {new Date(event.eventDate || event.date).toLocaleDateString('pt-AO', {
                               day: 'numeric',
                               month: 'long',
                               year: 'numeric',
@@ -215,30 +218,30 @@ const FeedCard: React.FC<{ item: FeedItem }> = ({ item }) => {
                 </div>
 
                 <p className="text-gray-700 mb-4 line-clamp-3">
-                  {item.content.description?.substring(0, 250) || item.content.description}
-                  {item.content.description && item.content.description.length > 250 && '...'}
+                  {event.description?.substring(0, 250) || event.description}
+                  {event.description && event.description.length > 250 && '...'}
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-4">
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                    {getTypeLabel(item.content.type)}
+                    {getTypeLabel(event.type)}
                   </span>
-                  {item.content.price !== undefined && (
+                  {event.price !== undefined && (
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      {item.content.price === 0 || item.content.price === '0' ? (
+                      {event.price === 0 ? (
                         'Gratuito'
                       ) : (
                         <>
                           <CurrencyDollarIcon className="h-3 w-3 mr-1" />
-                          Kz {typeof item.content.price === 'number' ? item.content.price.toFixed(2) : parseFloat(item.content.price || '0').toFixed(2)}
+                          Kz {event.price.toFixed(2)}
                         </>
                       )}
                     </span>
                   )}
-                  {item.content.maxAttendees && (
+                  {event.maxAttendees && (
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
                       <UserGroupIcon className="h-3 w-3 mr-1" />
-                      {item.content.currentAttendees || 0}/{item.content.maxAttendees} participantes
+                      {event.currentAttendees || 0}/{event.maxAttendees} participantes
                     </span>
                   )}
                 </div>
@@ -256,8 +259,10 @@ const FeedCard: React.FC<{ item: FeedItem }> = ({ item }) => {
             </article>
           </Link>
         );
+      }
 
-      case 'MENTORSHIP':
+      case 'MENTORSHIP': {
+        const mentorship = item.content as Mentorship;
         return (
           <Link href={getLink()} className="block group">
             <article className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-primary-300 transition-all duration-200 overflow-hidden">
@@ -269,40 +274,31 @@ const FeedCard: React.FC<{ item: FeedItem }> = ({ item }) => {
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors">
-                        {item.content.title}
+                        {mentorship.title}
                       </h3>
-                      {item.content.mentor?.firstName && (
-                        <Link
-                          href={`/profiles/${item.content.mentor.id}`}
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex items-center mt-1 text-sm text-gray-600 hover:text-primary-600 transition-colors"
-                        >
-                          <span>por {item.content.mentor.firstName} {item.content.mentor.lastName}</span>
-                        </Link>
-                      )}
                     </div>
                   </div>
                 </div>
 
                 <p className="text-gray-700 mb-4 line-clamp-3">
-                  {item.content.description?.substring(0, 250) || item.content.description}
-                  {item.content.description && item.content.description.length > 250 && '...'}
+                  {mentorship.description?.substring(0, 250) || mentorship.description}
+                  {mentorship.description && mentorship.description.length > 250 && '...'}
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-4">
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
                     Mentoria
                   </span>
-                  {item.content.price !== undefined && (
+                  {mentorship.price !== undefined && (
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                       <CurrencyDollarIcon className="h-3 w-3 mr-1" />
-                      Kz {typeof item.content.price === 'number' ? item.content.price.toFixed(2) : parseFloat(item.content.price || '0').toFixed(2)}
+                      Kz {mentorship.price.toFixed(2)}
                     </span>
                   )}
-                  {item.content.duration && (
+                  {mentorship.duration && (
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
                       <ClockIcon className="h-3 w-3 mr-1" />
-                      {item.content.duration}h
+                      {mentorship.duration}h
                     </span>
                   )}
                 </div>
@@ -320,6 +316,7 @@ const FeedCard: React.FC<{ item: FeedItem }> = ({ item }) => {
             </article>
           </Link>
         );
+      }
 
       default:
         return null;

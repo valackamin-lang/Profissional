@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import api from '../lib/api';
 import {
@@ -15,7 +14,6 @@ import {
 
 export const FeedSidebar: React.FC = () => {
   const { user } = useAuth();
-  const router = useRouter();
   const [stats, setStats] = useState({
     jobs: 0,
     events: 0,

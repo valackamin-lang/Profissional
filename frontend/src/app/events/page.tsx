@@ -9,12 +9,11 @@ import Link from 'next/link';
 import {
   CalendarIcon,
   CurrencyDollarIcon,
-  UserGroupIcon,
   BuildingOfficeIcon,
   MagnifyingGlassIcon,
   FunnelIcon,
-  ClockIcon,
   VideoCameraIcon,
+  ClockIcon,
 } from '@heroicons/react/24/outline';
 
 interface Event {
@@ -127,7 +126,7 @@ export default function EventsPage() {
                 <h1 className="text-4xl font-bold text-gray-900 mb-2">Eventos</h1>
                 <p className="text-gray-600 text-lg">Workshops, webinars e conferências profissionais</p>
               </div>
-              {(user?.role === 'COMPANY' || user?.role === 'MENTOR' || user?.role === 'ADMIN') && (
+              {(user?.role === 'PARTNER' || user?.role === 'MENTOR' || user?.role === 'ADMIN') && (
                 <Link
                   href="/events/create"
                   className="px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 shadow-lg hover:shadow-xl transition-all font-medium flex items-center space-x-2"
@@ -254,7 +253,7 @@ export default function EventsPage() {
               </div>
               <p className="text-xl font-semibold text-gray-900 mb-2">Nenhum evento encontrado</p>
               <p className="text-gray-600 mb-4">Tente ajustar os filtros ou criar um novo evento</p>
-              {(user?.role === 'COMPANY' || user?.role === 'MENTOR' || user?.role === 'ADMIN') && (
+              {(user?.role === 'PARTNER' || user?.role === 'MENTOR' || user?.role === 'ADMIN') && (
                 <Link
                   href="/events/create"
                   className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700"
@@ -267,7 +266,6 @@ export default function EventsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {events.map((event) => {
                 const eventDate = new Date(event.eventDate);
-                const isPast = eventDate < new Date();
                 const occupancyRate = event.maxAttendees 
                   ? Math.round(((event.currentAttendees || 0) / event.maxAttendees) * 100) 
                   : 0;
@@ -334,12 +332,12 @@ export default function EventsPage() {
                         </span>
                         {event.price !== undefined && (
                           <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            event.price === 0 || event.price === '0' 
+                            event.price === 0 
                               ? 'bg-green-100 text-green-800' 
                               : 'bg-yellow-100 text-yellow-800'
                           }`}>
                             <CurrencyDollarIcon className="h-3 w-3 inline mr-1" />
-                            {event.price === 0 || event.price === '0' ? 'Gratuito' : 
+                            {event.price === 0 ? 'Gratuito' : 
                              `Kz ${typeof event.price === 'number' ? event.price.toFixed(0) : parseFloat(event.price || '0').toFixed(0)}`}
                           </span>
                         )}

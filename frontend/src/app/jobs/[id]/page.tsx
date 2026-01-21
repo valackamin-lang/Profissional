@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { ProtectedRoute } from '../../../components/ProtectedRoute';
 import { Header } from '../../../components/Header';
 import { useAuth } from '../../../contexts/AuthContext';
@@ -15,7 +14,6 @@ import {
   CheckCircleIcon,
   XCircleIcon,
   BuildingOfficeIcon,
-  ClockIcon,
 } from '@heroicons/react/24/outline';
 import { CheckCircleIcon as CheckCircleIconSolid } from '@heroicons/react/24/solid';
 

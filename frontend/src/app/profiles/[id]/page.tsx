@@ -5,7 +5,6 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ProtectedRoute } from '../../../components/ProtectedRoute';
 import { Header } from '../../../components/Header';
-import { useAuth } from '../../../contexts/AuthContext';
 import api from '../../../lib/api';
 import {
   UserIcon,
@@ -67,7 +66,6 @@ interface Mentorship {
 export default function ProfileViewPage() {
   const params = useParams();
   const router = useRouter();
-  const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [stats, setStats] = useState<MentorStats | null>(null);
   const [mentorships, setMentorships] = useState<Mentorship[]>([]);
