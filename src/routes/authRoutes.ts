@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { body } from 'express-validator';
-import { register, login, refresh, logout, getMe, verifyEmail, resendVerification } from '../controllers/authController';
+import { register, login, refresh, logout, getMe, verifyEmail, resendVerification, forgotPassword, resetPassword } from '../controllers/authController';
 import { authenticate } from '../middleware/auth';
 import { validateRequest } from '../middleware/validateRequest';
 import { authRateLimiter } from '../middleware/rateLimiter';
@@ -44,6 +44,28 @@ router.post(
   ],
   validateRequest,
   resendVerification
+);
+
+// Password recovery routes
+router.post(
+  '/forgot-password',
+  authRateLimiter,
+  [
+    body('email').isEmail().withMessage('Email inválido'),
+  ],
+  validateRequest,
+  forgotPassword
+);
+
+router.post(
+  '/reset-password',
+  authRateLimiter,
+  [
+    body('token').notEmpty().withMessage('Token é obrigatório'),
+    body('password').isLength({ min: 6 }).withMessage('Senha deve ter no mínimo 6 caracteres'),
+  ],
+  validateRequest,
+  resetPassword
 );
 
 export default router;

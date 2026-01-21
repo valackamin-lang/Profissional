@@ -4788,3 +4788,557 @@
 {"level":"error","message":{"error":"Token de autenticação não fornecido","method":"POST","name":"Error","path":"/api/auth/logout","stack":"Error: Token de autenticação não fornecido\n    at authenticate (/home/kali/Área de Trabalho/PROFESSIONAL/backend/src/middleware/auth.ts:18:13)\n    at Layer.handle [as handle_request] (/home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/layer.js:95:5)\n    at next (/home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/route.js:149:13)\n    at Route.dispatch (/home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/route.js:119:3)\n    at Layer.handle [as handle_request] (/home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/layer.js:95:5)\n    at /home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/index.js:284:15\n    at Function.process_params (/home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/index.js:346:12)\n    at next (/home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/index.js:280:10)\n    at Function.handle (/home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/index.js:175:3)\n    at router (/home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/index.js:47:12)","statusCode":401},"service":"forgetech-backend","timestamp":"2026-01-21 15:30:04"}
 {"level":"info","message":"Login attempt for user: admin@forgetech.com, User ID: ee81f628-e925-48cd-b5bc-b25911ea6e1f","service":"forgetech-backend","timestamp":"2026-01-21 15:30:17"}
 {"level":"info","message":"Password verified successfully for user: admin@forgetech.com","service":"forgetech-backend","timestamp":"2026-01-21 15:30:17"}
+{"level":"info","message":"🔄 Syncing database...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Database synced successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Database connected and synced","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"warn","message":"⚠️  Roles básicas não encontradas. Executando seeders...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"🚀 Starting database seeders...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"🌱 Seeding roles and permissions...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Role STUDENT created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Role MENTOR created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Role PARTNER created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Role ADMIN created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission profile:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission profile:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission profile:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission job:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission job:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission job:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission job:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission job:apply created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission event:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission event:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission event:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission event:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission event:register created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission mentorship:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission mentorship:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission mentorship:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission mentorship:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission mentorship:purchase created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission admin:approve created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission admin:moderate created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission admin:manage_users created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permission admin:view_reports created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permissions assigned to role STUDENT","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permissions assigned to role MENTOR","service":"forgetech-backend","timestamp":"2026-01-21 15:33:21"}
+{"level":"info","message":"✅ Permissions assigned to role PARTNER","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Permissions assigned to role ADMIN","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Roles and permissions seeded successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"🌱 Seeding admin user...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Admin user created successfully","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"   Email: admin@forgetech.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"   Password: admin123","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"   ⚠️  Please change the password after first login!","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"🌱 Seeding sample data...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Created student1@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Created student2@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Created student3@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Created mentor@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Created partner@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Created job: Desenvolvedor Full Stack Júnior","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Created job: Estágio em Desenvolvimento Web","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Created event: Workshop de React Avançado","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Created event: Webinar: Carreira em Tech","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Created mentorship: Mentoria em Desenvolvimento Full Stack","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Created mentorship: Mentoria em Carreira Tech","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Sample data seeded successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"📝 Sample accounts created:","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"   Students: student1@example.com, student2@example.com, student3@example.com (password: student123)","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"   Mentor: mentor@example.com (password: mentor123)","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"   Partner: partner@example.com (password: partner123)","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ All seeders completed successfully!","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Seeders executados com sucesso","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"✅ Redis connected","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"🚀 Server running on port 3001","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"📝 Environment: development","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"🌐 API available at http://localhost:3001","service":"forgetech-backend","timestamp":"2026-01-21 15:33:22"}
+{"level":"info","message":"🔄 Syncing database...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:25"}
+{"level":"info","message":"✅ Database synced successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Database connected and synced","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"warn","message":"⚠️  Roles básicas não encontradas. Executando seeders...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"🚀 Starting database seeders...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"🌱 Seeding roles and permissions...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Role STUDENT created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Role MENTOR created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Role PARTNER created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Role ADMIN created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission profile:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission profile:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission profile:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission job:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission job:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission job:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission job:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission job:apply created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission event:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission event:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission event:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission event:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission event:register created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission mentorship:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission mentorship:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission mentorship:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission mentorship:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission mentorship:purchase created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission admin:approve created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission admin:moderate created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission admin:manage_users created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permission admin:view_reports created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permissions assigned to role STUDENT","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permissions assigned to role MENTOR","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permissions assigned to role PARTNER","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Permissions assigned to role ADMIN","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Roles and permissions seeded successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"🌱 Seeding admin user...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Admin user created successfully","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"   Email: admin@forgetech.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"   Password: admin123","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"   ⚠️  Please change the password after first login!","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"🌱 Seeding sample data...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Created student1@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Created student2@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Created student3@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:26"}
+{"level":"info","message":"✅ Created mentor@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"✅ Created partner@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"✅ Created job: Desenvolvedor Full Stack Júnior","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"✅ Created job: Estágio em Desenvolvimento Web","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"✅ Created event: Workshop de React Avançado","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"✅ Created event: Webinar: Carreira em Tech","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"✅ Created mentorship: Mentoria em Desenvolvimento Full Stack","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"✅ Created mentorship: Mentoria em Carreira Tech","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"✅ Sample data seeded successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"📝 Sample accounts created:","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"   Students: student1@example.com, student2@example.com, student3@example.com (password: student123)","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"   Mentor: mentor@example.com (password: mentor123)","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"   Partner: partner@example.com (password: partner123)","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"✅ All seeders completed successfully!","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"✅ Seeders executados com sucesso","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"✅ Redis connected","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"🚀 Server running on port 3001","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"📝 Environment: development","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"🌐 API available at http://localhost:3001","service":"forgetech-backend","timestamp":"2026-01-21 15:33:27"}
+{"level":"info","message":"🔄 Syncing database...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Database synced successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Database connected and synced","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"warn","message":"⚠️  Roles básicas não encontradas. Executando seeders...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"🚀 Starting database seeders...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"🌱 Seeding roles and permissions...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Role STUDENT created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Role MENTOR created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Role PARTNER created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Role ADMIN created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission profile:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission profile:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission profile:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission job:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission job:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission job:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission job:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission job:apply created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission event:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission event:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission event:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission event:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission event:register created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission mentorship:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission mentorship:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission mentorship:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission mentorship:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission mentorship:purchase created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission admin:approve created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission admin:moderate created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission admin:manage_users created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permission admin:view_reports created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permissions assigned to role STUDENT","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permissions assigned to role MENTOR","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permissions assigned to role PARTNER","service":"forgetech-backend","timestamp":"2026-01-21 15:33:30"}
+{"level":"info","message":"✅ Permissions assigned to role ADMIN","service":"forgetech-backend","timestamp":"2026-01-21 15:33:31"}
+{"level":"info","message":"✅ Roles and permissions seeded successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:33:31"}
+{"level":"info","message":"🌱 Seeding admin user...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:31"}
+{"level":"info","message":"✅ Admin user created successfully","service":"forgetech-backend","timestamp":"2026-01-21 15:33:31"}
+{"level":"info","message":"   Email: admin@forgetech.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:31"}
+{"level":"info","message":"   Password: admin123","service":"forgetech-backend","timestamp":"2026-01-21 15:33:31"}
+{"level":"info","message":"   ⚠️  Please change the password after first login!","service":"forgetech-backend","timestamp":"2026-01-21 15:33:31"}
+{"level":"info","message":"🌱 Seeding sample data...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:31"}
+{"level":"info","message":"✅ Created student1@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:31"}
+{"level":"info","message":"✅ Created student2@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"✅ Created student3@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"✅ Created mentor@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"✅ Created partner@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"✅ Created job: Desenvolvedor Full Stack Júnior","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"✅ Created job: Estágio em Desenvolvimento Web","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"✅ Created event: Workshop de React Avançado","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"✅ Created event: Webinar: Carreira em Tech","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"✅ Created mentorship: Mentoria em Desenvolvimento Full Stack","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"✅ Created mentorship: Mentoria em Carreira Tech","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"✅ Sample data seeded successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"📝 Sample accounts created:","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"   Students: student1@example.com, student2@example.com, student3@example.com (password: student123)","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"   Mentor: mentor@example.com (password: mentor123)","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"   Partner: partner@example.com (password: partner123)","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"✅ All seeders completed successfully!","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"✅ Seeders executados com sucesso","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"✅ Redis connected","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"🚀 Server running on port 3001","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"📝 Environment: development","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"🌐 API available at http://localhost:3001","service":"forgetech-backend","timestamp":"2026-01-21 15:33:32"}
+{"level":"info","message":"🔄 Syncing database...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Database synced successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Database connected and synced","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"warn","message":"⚠️  Roles básicas não encontradas. Executando seeders...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"🚀 Starting database seeders...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"🌱 Seeding roles and permissions...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Role STUDENT created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Role MENTOR created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Role PARTNER created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Role ADMIN created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission profile:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission profile:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission profile:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission job:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission job:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission job:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission job:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission job:apply created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission event:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission event:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission event:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission event:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission event:register created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission mentorship:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission mentorship:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission mentorship:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission mentorship:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission mentorship:purchase created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission admin:approve created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission admin:moderate created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission admin:manage_users created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permission admin:view_reports created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permissions assigned to role STUDENT","service":"forgetech-backend","timestamp":"2026-01-21 15:33:49"}
+{"level":"info","message":"✅ Permissions assigned to role MENTOR","service":"forgetech-backend","timestamp":"2026-01-21 15:33:50"}
+{"level":"info","message":"✅ Permissions assigned to role PARTNER","service":"forgetech-backend","timestamp":"2026-01-21 15:33:50"}
+{"level":"info","message":"✅ Permissions assigned to role ADMIN","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ Roles and permissions seeded successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"🌱 Seeding admin user...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ Admin user created successfully","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"   Email: admin@forgetech.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"   Password: admin123","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"   ⚠️  Please change the password after first login!","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"🌱 Seeding sample data...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ Created student1@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ Created student2@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ Created student3@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ Created mentor@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ Created partner@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ Created job: Desenvolvedor Full Stack Júnior","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ Created job: Estágio em Desenvolvimento Web","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ Created event: Workshop de React Avançado","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ Created event: Webinar: Carreira em Tech","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ Created mentorship: Mentoria em Desenvolvimento Full Stack","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ Created mentorship: Mentoria em Carreira Tech","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ Sample data seeded successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"📝 Sample accounts created:","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"   Students: student1@example.com, student2@example.com, student3@example.com (password: student123)","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"   Mentor: mentor@example.com (password: mentor123)","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"   Partner: partner@example.com (password: partner123)","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ All seeders completed successfully!","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ Seeders executados com sucesso","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"✅ Redis connected","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"🚀 Server running on port 3001","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"📝 Environment: development","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"🌐 API available at http://localhost:3001","service":"forgetech-backend","timestamp":"2026-01-21 15:33:51"}
+{"level":"info","message":"🔄 Syncing database...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:54"}
+{"level":"info","message":"✅ Database synced successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Database connected and synced","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"warn","message":"⚠️  Roles básicas não encontradas. Executando seeders...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"🚀 Starting database seeders...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"🌱 Seeding roles and permissions...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Role STUDENT created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Role MENTOR created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Role PARTNER created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Role ADMIN created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission profile:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission profile:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission profile:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission job:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission job:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission job:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission job:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission job:apply created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission event:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission event:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission event:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission event:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission event:register created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission mentorship:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission mentorship:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission mentorship:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission mentorship:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission mentorship:purchase created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission admin:approve created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission admin:moderate created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission admin:manage_users created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permission admin:view_reports created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permissions assigned to role STUDENT","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permissions assigned to role MENTOR","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permissions assigned to role PARTNER","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Permissions assigned to role ADMIN","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Roles and permissions seeded successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"🌱 Seeding admin user...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:55"}
+{"level":"info","message":"✅ Admin user created successfully","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"   Email: admin@forgetech.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"   Password: admin123","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"   ⚠️  Please change the password after first login!","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"🌱 Seeding sample data...","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"✅ Created student1@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"✅ Created student2@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"✅ Created student3@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"✅ Created mentor@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"✅ Created partner@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"✅ Created job: Desenvolvedor Full Stack Júnior","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"✅ Created job: Estágio em Desenvolvimento Web","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"✅ Created event: Workshop de React Avançado","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"✅ Created event: Webinar: Carreira em Tech","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"✅ Created mentorship: Mentoria em Desenvolvimento Full Stack","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"✅ Created mentorship: Mentoria em Carreira Tech","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"✅ Sample data seeded successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"📝 Sample accounts created:","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"   Students: student1@example.com, student2@example.com, student3@example.com (password: student123)","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"   Mentor: mentor@example.com (password: mentor123)","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"   Partner: partner@example.com (password: partner123)","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"✅ All seeders completed successfully!","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"✅ Seeders executados com sucesso","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"✅ Redis connected","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"🚀 Server running on port 3001","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"📝 Environment: development","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"🌐 API available at http://localhost:3001","service":"forgetech-backend","timestamp":"2026-01-21 15:33:56"}
+{"level":"info","message":"🔄 Syncing database...","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Database synced successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Database connected and synced","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"warn","message":"⚠️  Roles básicas não encontradas. Executando seeders...","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"🚀 Starting database seeders...","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"🌱 Seeding roles and permissions...","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Role STUDENT created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Role MENTOR created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Role PARTNER created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Role ADMIN created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission profile:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission profile:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission profile:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission job:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission job:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission job:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission job:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission job:apply created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission event:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission event:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission event:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission event:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission event:register created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission mentorship:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission mentorship:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission mentorship:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission mentorship:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission mentorship:purchase created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission admin:approve created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission admin:moderate created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission admin:manage_users created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permission admin:view_reports created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permissions assigned to role STUDENT","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permissions assigned to role MENTOR","service":"forgetech-backend","timestamp":"2026-01-21 15:34:11"}
+{"level":"info","message":"✅ Permissions assigned to role PARTNER","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Permissions assigned to role ADMIN","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Roles and permissions seeded successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"🌱 Seeding admin user...","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Admin user created successfully","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"   Email: admin@forgetech.com","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"   Password: admin123","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"   ⚠️  Please change the password after first login!","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"🌱 Seeding sample data...","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Created student1@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Created student2@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Created student3@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Created mentor@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Created partner@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Created job: Desenvolvedor Full Stack Júnior","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Created job: Estágio em Desenvolvimento Web","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Created event: Workshop de React Avançado","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Created event: Webinar: Carreira em Tech","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Created mentorship: Mentoria em Desenvolvimento Full Stack","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Created mentorship: Mentoria em Carreira Tech","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Sample data seeded successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"📝 Sample accounts created:","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"   Students: student1@example.com, student2@example.com, student3@example.com (password: student123)","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"   Mentor: mentor@example.com (password: mentor123)","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"   Partner: partner@example.com (password: partner123)","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ All seeders completed successfully!","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Seeders executados com sucesso","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"✅ Redis connected","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"🚀 Server running on port 3001","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"📝 Environment: development","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"🌐 API available at http://localhost:3001","service":"forgetech-backend","timestamp":"2026-01-21 15:34:12"}
+{"level":"info","message":"🔄 Syncing database...","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Database synced successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Database connected and synced","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"warn","message":"⚠️  Roles básicas não encontradas. Executando seeders...","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"🚀 Starting database seeders...","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"🌱 Seeding roles and permissions...","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Role STUDENT created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Role MENTOR created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Role PARTNER created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Role ADMIN created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission profile:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission profile:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission profile:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission job:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission job:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission job:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission job:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission job:apply created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission event:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission event:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission event:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission event:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission event:register created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission mentorship:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission mentorship:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission mentorship:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission mentorship:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission mentorship:purchase created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission admin:approve created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission admin:moderate created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission admin:manage_users created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permission admin:view_reports created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permissions assigned to role STUDENT","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permissions assigned to role MENTOR","service":"forgetech-backend","timestamp":"2026-01-21 15:34:39"}
+{"level":"info","message":"✅ Permissions assigned to role PARTNER","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Permissions assigned to role ADMIN","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Roles and permissions seeded successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"🌱 Seeding admin user...","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Admin user created successfully","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"   Email: admin@forgetech.com","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"   Password: admin123","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"   ⚠️  Please change the password after first login!","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"🌱 Seeding sample data...","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Created student1@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Created student2@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Created student3@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Created mentor@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Created partner@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Created job: Desenvolvedor Full Stack Júnior","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Created job: Estágio em Desenvolvimento Web","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Created event: Workshop de React Avançado","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Created event: Webinar: Carreira em Tech","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Created mentorship: Mentoria em Desenvolvimento Full Stack","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Created mentorship: Mentoria em Carreira Tech","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Sample data seeded successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"📝 Sample accounts created:","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"   Students: student1@example.com, student2@example.com, student3@example.com (password: student123)","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"   Mentor: mentor@example.com (password: mentor123)","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"   Partner: partner@example.com (password: partner123)","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ All seeders completed successfully!","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Seeders executados com sucesso","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"✅ Redis connected","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"🚀 Server running on port 3001","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"📝 Environment: development","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"info","message":"🌐 API available at http://localhost:3001","service":"forgetech-backend","timestamp":"2026-01-21 15:34:40"}
+{"level":"error","message":{"error":"Token de autenticação não fornecido","method":"POST","name":"Error","path":"/api/auth/logout","stack":"Error: Token de autenticação não fornecido\n    at authenticate (/home/kali/Área de Trabalho/PROFESSIONAL/backend/src/middleware/auth.ts:18:13)\n    at Layer.handle [as handle_request] (/home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/layer.js:95:5)\n    at next (/home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/route.js:149:13)\n    at Route.dispatch (/home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/route.js:119:3)\n    at Layer.handle [as handle_request] (/home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/layer.js:95:5)\n    at /home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/index.js:284:15\n    at Function.process_params (/home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/index.js:346:12)\n    at next (/home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/index.js:280:10)\n    at Function.handle (/home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/index.js:175:3)\n    at router (/home/kali/Área de Trabalho/PROFESSIONAL/backend/node_modules/express/lib/router/index.js:47:12)","statusCode":401},"service":"forgetech-backend","timestamp":"2026-01-21 15:35:09"}
+{"level":"warn","message":"Tentativa de reset de senha para email não cadastrado: reduaneamin@gmail.com","service":"forgetech-backend","timestamp":"2026-01-21 15:35:45"}
+{"level":"info","message":"🔄 Syncing database...","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Database synced successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Database connected and synced","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"warn","message":"⚠️  Roles básicas não encontradas. Executando seeders...","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"🚀 Starting database seeders...","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"🌱 Seeding roles and permissions...","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Role STUDENT created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Role MENTOR created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Role PARTNER created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Role ADMIN created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission profile:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission profile:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission profile:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission job:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission job:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission job:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission job:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission job:apply created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission event:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission event:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission event:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission event:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission event:register created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission mentorship:create created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission mentorship:read created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission mentorship:update created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission mentorship:delete created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission mentorship:purchase created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission admin:approve created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission admin:moderate created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission admin:manage_users created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permission admin:view_reports created/found","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permissions assigned to role STUDENT","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permissions assigned to role MENTOR","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permissions assigned to role PARTNER","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Permissions assigned to role ADMIN","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Roles and permissions seeded successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"🌱 Seeding admin user...","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Admin user created successfully","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"   Email: admin@forgetech.com","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"   Password: admin123","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"   ⚠️  Please change the password after first login!","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"🌱 Seeding sample data...","service":"forgetech-backend","timestamp":"2026-01-21 15:35:47"}
+{"level":"info","message":"✅ Created student1@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"✅ Created student2@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"✅ Created student3@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"✅ Created mentor@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"✅ Created partner@example.com","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"✅ Created job: Desenvolvedor Full Stack Júnior","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"✅ Created job: Estágio em Desenvolvimento Web","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"✅ Created event: Workshop de React Avançado","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"✅ Created event: Webinar: Carreira em Tech","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"✅ Created mentorship: Mentoria em Desenvolvimento Full Stack","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"✅ Created mentorship: Mentoria em Carreira Tech","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"✅ Sample data seeded successfully.","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"📝 Sample accounts created:","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"   Students: student1@example.com, student2@example.com, student3@example.com (password: student123)","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"   Mentor: mentor@example.com (password: mentor123)","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"   Partner: partner@example.com (password: partner123)","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"✅ All seeders completed successfully!","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"✅ Seeders executados com sucesso","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"✅ Redis connected","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"🚀 Server running on port 3001","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"📝 Environment: development","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"🌐 API available at http://localhost:3001","service":"forgetech-backend","timestamp":"2026-01-21 15:35:48"}
+{"level":"info","message":"📧 Configurando SMTP: smtp.gmail.com:587 | User: valackamin@gmail.com | Password: ***tayn","service":"forgetech-backend","timestamp":"2026-01-21 15:36:31"}
+{"level":"info","message":"✅ Email de verificação enviado para reduaneamin@gmail.com","service":"forgetech-backend","timestamp":"2026-01-21 15:36:36"}
+{"level":"info","message":"Email verificado para reduaneamin@gmail.com","service":"forgetech-backend","timestamp":"2026-01-21 15:36:46"}
+{"level":"info","message":"📧 Configurando SMTP: smtp.gmail.com:587 | User: valackamin@gmail.com | Password: ***tayn","service":"forgetech-backend","timestamp":"2026-01-21 15:37:00"}
+{"level":"info","message":"✅ Email de recuperação de senha enviado para reduaneamin@gmail.com","service":"forgetech-backend","timestamp":"2026-01-21 15:37:04"}
+{"level":"info","message":"Senha redefinida para usuário reduaneamin@gmail.com","service":"forgetech-backend","timestamp":"2026-01-21 15:37:19"}
+{"level":"info","message":"Login attempt for user: reduaneamin@gmail.com, User ID: 5b37c7a9-3e03-40d4-b544-51ecd2861e1e","service":"forgetech-backend","timestamp":"2026-01-21 15:37:22"}
+{"level":"info","message":"Password verified successfully for user: reduaneamin@gmail.com","service":"forgetech-backend","timestamp":"2026-01-21 15:37:22"}

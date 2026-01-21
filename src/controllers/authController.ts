@@ -7,7 +7,7 @@ import { AppError } from '../utils/AppError';
 import { AuthRequest } from '../middleware/auth';
 import logger from '../config/logger';
 import AuditLog from '../models/AuditLog';
-import { sendVerificationEmail, resendVerificationEmail, verifyEmailToken } from '../services/emailService';
+import { sendVerificationEmail, resendVerificationEmail, verifyEmailToken, sendPasswordResetEmail, verifyPasswordResetToken, clearPasswordResetToken } from '../services/emailService';
 
 export const register = async (
   req: Request,
@@ -395,6 +395,93 @@ export const resendVerification = async (
     }
     if (error.message.includes('não encontrado')) {
       throw new AppError('Usuário não encontrado', 404);
+    }
+    next(error);
+  }
+};
+
+/**
+ * Solicita recuperação de senha
+ */
+export const forgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      throw new AppError('Email é obrigatório', 400);
+    }
+
+    // Enviar email (não revela se o email existe ou não)
+    await sendPasswordResetEmail(email);
+
+    // Sempre retornar sucesso por segurança (não revelar se email existe)
+    res.json({
+      success: true,
+      message: 'Se o email estiver cadastrado, você receberá um link para redefinir sua senha.',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Redefine senha usando token
+ */
+export const resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { token, password } = req.body;
+
+    if (!token || !password) {
+      throw new AppError('Token e senha são obrigatórios', 400);
+    }
+
+    if (password.length < 6) {
+      throw new AppError('A senha deve ter no mínimo 6 caracteres', 400);
+    }
+
+    // Verificar token
+    const user = await verifyPasswordResetToken(token);
+
+    // Hash da nova senha
+    const hashedPassword = await hashPassword(password);
+
+    // Atualizar senha
+    user.password = hashedPassword;
+    await clearPasswordResetToken(user.id);
+    await user.save();
+
+    // Invalidar refresh token (forçar logout de outros dispositivos)
+    user.refreshToken = null;
+    await user.save();
+
+    // Audit log
+    await AuditLog.create({
+      userId: user.id,
+      action: 'UPDATE',
+      resource: 'USER',
+      resourceId: user.id,
+      details: { action: 'PASSWORD_RESET' },
+      ipAddress: req.ip,
+      userAgent: req.get('user-agent'),
+    });
+
+    logger.info(`Senha redefinida para usuário ${user.email}`);
+
+    res.json({
+      success: true,
+      message: 'Senha redefinida com sucesso! Você já pode fazer login.',
+    });
+  } catch (error: any) {
+    if (error.message.includes('Token') || error.message.includes('expirado')) {
+      throw new AppError(error.message, 400);
     }
     next(error);
   }
