@@ -2,6 +2,8 @@
 
 import axios from 'axios';
 
+// Garantir que a URL da API está disponível
+// NEXT_PUBLIC_* variáveis são expostas tanto no cliente quanto no servidor
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 const api = axios.create({

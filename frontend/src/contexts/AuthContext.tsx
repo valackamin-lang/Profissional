@@ -21,6 +21,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     const initAuth = async () => {
+      // Garantir que estamos no cliente
       if (typeof window === 'undefined') {
         setLoading(false);
         return;
@@ -29,11 +30,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       try {
         const token = localStorage.getItem('accessToken');
         if (token) {
-          const response = await api.get('/auth/me');
-          setUser(response.data.data.user);
+          try {
+            const response = await api.get('/auth/me');
+            if (response?.data?.data?.user) {
+              setUser(response.data.data.user);
+            }
+          } catch (apiError: any) {
+            // Se a API falhar, limpar tokens
+            console.warn('Erro ao verificar autenticação:', apiError?.message);
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+          }
         }
-      } catch (error) {
+      } catch (error: any) {
         // Silenciosamente falhar se não conseguir autenticar
+        console.warn('Erro ao inicializar autenticação:', error?.message);
         if (typeof window !== 'undefined') {
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
@@ -43,7 +54,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
     };
 
-    initAuth();
+    // Aguardar um tick para garantir que estamos no cliente
+    if (typeof window !== 'undefined') {
+      initAuth();
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   const login = async (email: string, password: string) => {

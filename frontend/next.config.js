@@ -3,6 +3,12 @@ const nextConfig = {
   reactStrictMode: false, // Desabilitar temporariamente para evitar problemas
   images: {
     domains: ['localhost'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.vercel.app',
+      },
+    ],
   },
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
