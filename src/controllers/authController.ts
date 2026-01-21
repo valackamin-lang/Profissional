@@ -7,6 +7,7 @@ import { AppError } from '../utils/AppError';
 import { AuthRequest } from '../middleware/auth';
 import logger from '../config/logger';
 import AuditLog from '../models/AuditLog';
+import { sendVerificationEmail, resendVerificationEmail, verifyEmailToken } from '../services/emailService';
 
 export const register = async (
   req: Request,
@@ -26,10 +27,19 @@ export const register = async (
       throw new AppError('Usuário já existe', 409);
     }
 
-    // Get role
-    const role = await Role.findOne({ where: { name: roleName } });
+    // Get role - criar se não existir (fallback para garantir que roles básicas existam)
+    let role = await Role.findOne({ where: { name: roleName } });
     if (!role) {
-      throw new AppError('Role não encontrada', 404);
+      // Tentar criar a role STUDENT se não existir
+      if (roleName === 'STUDENT') {
+        role = await Role.create({
+          name: 'STUDENT',
+          description: 'Estudante/Profissional',
+        });
+        logger.info(`Role STUDENT criada automaticamente durante registro`);
+      } else {
+        throw new AppError(`Role '${roleName}' não encontrada. Por favor, execute os seeders primeiro.`, 404);
+      }
     }
 
     // Hash password
@@ -56,6 +66,11 @@ export const register = async (
     user.refreshToken = refreshToken;
     await user.save();
 
+    // Enviar email de verificação (async, não bloquear resposta)
+    sendVerificationEmail(user.id).catch((error) => {
+      logger.error(`Erro ao enviar email de verificação para ${user.email}:`, error);
+    });
+
     // Audit log
     await AuditLog.create({
       action: 'CREATE',
@@ -73,9 +88,11 @@ export const register = async (
           id: user.id,
           email: user.email,
           roleId: user.roleId,
+          isEmailVerified: user.isEmailVerified,
         },
         accessToken,
         refreshToken,
+        message: 'Conta criada com sucesso! Verifique seu email para ativar sua conta.',
       },
     });
   } catch (error) {
@@ -300,6 +317,85 @@ export const getMe = async (
       },
     });
   } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Verifica email usando token
+ */
+export const verifyEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { token } = req.query;
+
+    if (!token || typeof token !== 'string') {
+      throw new AppError('Token de verificação é obrigatório', 400);
+    }
+
+    const user = await verifyEmailToken(token);
+
+    // Audit log
+    await AuditLog.create({
+      userId: user.id,
+      action: 'UPDATE',
+      resource: 'USER',
+      resourceId: user.id,
+      details: { action: 'EMAIL_VERIFIED' },
+      ipAddress: req.ip,
+      userAgent: req.get('user-agent'),
+    });
+
+    res.json({
+      success: true,
+      message: 'Email verificado com sucesso!',
+      data: {
+        user: {
+          id: user.id,
+          email: user.email,
+          isEmailVerified: user.isEmailVerified,
+        },
+      },
+    });
+  } catch (error: any) {
+    if (error.message.includes('Token') || error.message.includes('expirado')) {
+      throw new AppError(error.message, 400);
+    }
+    next(error);
+  }
+};
+
+/**
+ * Reenvia email de verificação
+ */
+export const resendVerification = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      throw new AppError('Email é obrigatório', 400);
+    }
+
+    await resendVerificationEmail(email);
+
+    res.json({
+      success: true,
+      message: 'Email de verificação reenviado com sucesso! Verifique sua caixa de entrada.',
+    });
+  } catch (error: any) {
+    if (error.message.includes('já está verificado')) {
+      throw new AppError(error.message, 400);
+    }
+    if (error.message.includes('não encontrado')) {
+      throw new AppError('Usuário não encontrado', 404);
+    }
     next(error);
   }
 };

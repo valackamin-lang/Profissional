@@ -75,6 +75,14 @@ Subscription.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 User.hasMany(Payment, { foreignKey: 'userId', as: 'payments' });
 Payment.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
+// Payment - Mentorship relationship
+Mentorship.hasMany(Payment, { foreignKey: 'mentorshipId', as: 'payments' });
+Payment.belongsTo(Mentorship, { foreignKey: 'mentorshipId', as: 'mentorship' });
+
+// Payment - Event relationship
+Event.hasMany(Payment, { foreignKey: 'eventId', as: 'payments' });
+Payment.belongsTo(Event, { foreignKey: 'eventId', as: 'event' });
+
 // User - AuditLog relationship
 User.hasMany(AuditLog, { foreignKey: 'userId', as: 'auditLogs' });
 AuditLog.belongsTo(User, { foreignKey: 'userId', as: 'user' });

@@ -8,6 +8,8 @@ export interface UserAttributes {
   password: string;
   roleId: string;
   isEmailVerified: boolean;
+  emailVerificationToken?: string;
+  emailVerificationExpires?: Date;
   twoFactorEnabled: boolean;
   twoFactorSecret?: string;
   refreshToken?: string;
@@ -24,6 +26,8 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public password!: string;
   public roleId!: string;
   public isEmailVerified!: boolean;
+  public emailVerificationToken?: string;
+  public emailVerificationExpires?: Date;
   public twoFactorEnabled!: boolean;
   public twoFactorSecret?: string;
   public refreshToken?: string;
@@ -64,6 +68,14 @@ User.init(
     isEmailVerified: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+    },
+    emailVerificationToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    emailVerificationExpires: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
     twoFactorEnabled: {
       type: DataTypes.BOOLEAN,

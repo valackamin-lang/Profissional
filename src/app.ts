@@ -61,7 +61,9 @@ import auditRoutes from './routes/auditRoutes';
 import adminRoutes from './routes/adminRoutes';
 import roleRoutes from './routes/roleRoutes';
 import permissionRoutes from './routes/permissionRoutes';
+import gpoRoutes from './routes/gpoRoutes';
 import passport from './config/passport';
+import Role from './models/Role';
 
 app.use(passport.initialize());
 
@@ -75,6 +77,7 @@ app.use('/api/mentorships', mentorshipRoutes);
 app.use('/api/feed', feedRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/stripe', stripeRoutes);
+app.use('/api/gpo', gpoRoutes);
 app.use('/api/commissions', commissionRoutes);
 app.use('/api/video', videoRoutes);
 app.use('/api/moderation', moderationRoutes);
@@ -95,6 +98,20 @@ const startServer = async (): Promise<void> => {
       await connectDatabase();
       await syncDatabase(process.env.NODE_ENV === 'development');
       logger.info('✅ Database connected and synced');
+      
+      // Verificar se roles básicas existem, se não, executar seeders
+      const studentRole = await Role.findOne({ where: { name: 'STUDENT' } });
+      if (!studentRole) {
+        logger.warn('⚠️  Roles básicas não encontradas. Executando seeders...');
+        try {
+          const { runSeeders } = await import('./seeders');
+          await runSeeders();
+          logger.info('✅ Seeders executados com sucesso');
+        } catch (seedError) {
+          logger.error('❌ Erro ao executar seeders:', seedError);
+          logger.warn('   Execute manualmente: npm run seed');
+        }
+      }
     } catch (dbError) {
       logger.warn('⚠️  Database connection failed. Server will start but database features will not work.');
       logger.warn('   Make sure PostgreSQL is running: docker-compose up -d');

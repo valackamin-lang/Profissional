@@ -5,15 +5,33 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const emailTransporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD,
-  },
-});
+// Função para criar transporter com credenciais limpas
+const createEmailTransporter = () => {
+  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+    return null;
+  }
+
+  const smtpHost = process.env.SMTP_HOST.trim();
+  const smtpUser = process.env.SMTP_USER.trim();
+  // Remover espaços da senha (App Passwords do Gmail podem ter espaços)
+  const smtpPassword = process.env.SMTP_PASSWORD.replace(/\s+/g, '').trim();
+  const smtpPort = parseInt(process.env.SMTP_PORT || '587');
+
+  return nodemailer.createTransport({
+    host: smtpHost,
+    port: smtpPort,
+    secure: smtpPort === 465,
+    auth: {
+      user: smtpUser,
+      pass: smtpPassword,
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+};
+
+const emailTransporter = createEmailTransporter();
 
 export const createNotification = async (
   userId: string,

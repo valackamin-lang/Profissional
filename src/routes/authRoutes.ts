@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { body } from 'express-validator';
-import { register, login, refresh, logout, getMe } from '../controllers/authController';
+import { register, login, refresh, logout, getMe, verifyEmail, resendVerification } from '../controllers/authController';
 import { authenticate } from '../middleware/auth';
 import { validateRequest } from '../middleware/validateRequest';
 import { authRateLimiter } from '../middleware/rateLimiter';
@@ -33,5 +33,17 @@ router.post(
 router.post('/refresh', refresh);
 router.post('/logout', authenticate, logout);
 router.get('/me', authenticate, getMe);
+
+// Email verification routes
+router.get('/verify-email', verifyEmail);
+router.post(
+  '/resend-verification',
+  authRateLimiter,
+  [
+    body('email').isEmail().withMessage('Email inválido'),
+  ],
+  validateRequest,
+  resendVerification
+);
 
 export default router;

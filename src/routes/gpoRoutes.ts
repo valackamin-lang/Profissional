@@ -1,0 +1,47 @@
+import { Router } from 'express';
+import { body, query } from 'express-validator';
+import {
+  generatePurchaseToken,
+  handleCallback,
+  checkPaymentStatus,
+  checkPaymentByResource,
+} from '../controllers/gpoController';
+import { authenticate } from '../middleware/auth';
+import { validateRequest } from '../middleware/validateRequest';
+import express from 'express';
+
+const router = Router();
+
+// Callback do GPO (sem autenticação, mas pode ter validação de IP)
+router.post(
+  '/callback',
+  express.json(),
+  handleCallback
+);
+
+// Rotas autenticadas
+router.use(authenticate);
+
+router.post(
+  '/generate-token',
+  [
+    body('mentorshipId').optional().isUUID(),
+    body('eventId').optional().isUUID(),
+  ],
+  validateRequest,
+  generatePurchaseToken
+);
+
+router.get('/:paymentId/status', checkPaymentStatus);
+
+router.get(
+  '/check',
+  [
+    query('mentorshipId').optional().isUUID(),
+    query('eventId').optional().isUUID(),
+  ],
+  validateRequest,
+  checkPaymentByResource
+);
+
+export default router;
