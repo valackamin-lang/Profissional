@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+/* Garantir que inputs sejam interativos */
+input, textarea, select, button {
+  pointer-events: auto !important;
+}
+
+/* Garantir que o texto dos inputs seja visível */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+textarea {
+  color: #111827 !important; /* text-gray-900 */
+  background-color: #ffffff !important;
+}
+
+input:disabled,
+textarea:disabled {
+  color: #6b7280 !important; /* text-gray-500 */
+  background-color: #f3f4f6 !important; /* bg-gray-100 */
+}
+
+/* Remover qualquer overlay que possa bloquear */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  z-index: 1;
+}
