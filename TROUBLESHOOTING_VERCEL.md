@@ -88,11 +88,13 @@ import { useState } from 'react';
 ## 🔧 Checklist de Verificação
 
 - [ ] Variáveis de ambiente configuradas no Vercel
-- [ ] `NEXT_PUBLIC_API_URL` aponta para o backend correto
+- [ ] `NEXT_PUBLIC_API_URL` aponta para o backend correto (URL pública acessível)
 - [ ] Todos os arquivos que usam `localStorage`/`window` têm `'use client'`
 - [ ] Build local funciona sem erros (`npm run build`)
 - [ ] Não há imports de módulos client-only em componentes server-side
 - [ ] Dependências estão atualizadas e compatíveis
+- [ ] Backend está rodando e acessível publicamente
+- [ ] CORS está configurado no backend para aceitar requisições do domínio do Vercel
 
 ## 📝 Como Verificar Logs no Vercel
 
@@ -105,20 +107,37 @@ import { useState } from 'react';
 ## 🚀 Deploy Correto
 
 1. **Configure variáveis de ambiente no Vercel:**
-   ```
-   NEXT_PUBLIC_API_URL=https://seu-backend.herokuapp.com
-   ```
+   - Acesse: https://vercel.com/dashboard
+   - Vá em seu projeto → **Settings** → **Environment Variables**
+   - Adicione:
+     ```
+     NEXT_PUBLIC_API_URL=https://seu-backend.herokuapp.com
+     ```
+   - **IMPORTANTE:** Selecione os ambientes (Production, Preview, Development)
+   - Clique em **Save**
 
 2. **Certifique-se de que o backend está acessível:**
    - O backend deve estar rodando e acessível publicamente
    - CORS deve estar configurado para aceitar requisições do domínio do Vercel
+   - Teste a URL do backend: `curl https://seu-backend.herokuapp.com/api/health`
 
-3. **Faça o deploy:**
+3. **Verifique o build localmente:**
+   ```bash
+   cd frontend
+   npm run build
+   ```
+   - Se o build falhar localmente, também falhará no Vercel
+
+4. **Faça o deploy:**
    ```bash
    git add .
    git commit -m "Fix: Correções para Vercel"
    git push
    ```
+
+5. **Após o deploy, verifique os logs:**
+   - Vercel Dashboard → **Deployments** → Clique no deployment
+   - Vá em **Functions** para ver logs de erro detalhados
 
 ## 🔗 Links Úteis
 

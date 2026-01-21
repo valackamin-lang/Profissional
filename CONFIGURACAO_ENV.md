@@ -44,6 +44,9 @@ DB_PASSWORD=forgetech_password
 # Redis
 REDIS_HOST=localhost
 REDIS_PORT=6379
+REDIS_USER=default
+REDIS_PASSWORD=
+# Nota: REDISUSER também é aceito como alias para REDIS_USER
 
 # JWT (IMPORTANTE: Altere em produção!)
 JWT_SECRET=your-super-secret-jwt-key-change-in-production-min-32-chars
@@ -212,6 +215,7 @@ Certifique-se de que o `.gitignore` contém:
 ### Backend
 
 - `DB_*` - Configuração do banco de dados
+- `REDIS_*` - Configuração do Redis (host, port, user, password)
 - `JWT_SECRET` - Chave secreta para tokens JWT
 - `SMTP_*` - Configuração de email
 - `FRONTEND_URL` - URL do frontend (para CORS e links)

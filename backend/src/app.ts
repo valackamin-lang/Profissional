@@ -4,7 +4,6 @@ import { connectDatabase } from './config/database';
 import { syncDatabase } from './config/syncDatabase';
 import redis from './config/redis';
 import logger from './config/logger';
-import corsMiddleware from './middleware/cors';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
 dotenv.config();
@@ -13,7 +12,6 @@ const app: Application = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(corsMiddleware);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
