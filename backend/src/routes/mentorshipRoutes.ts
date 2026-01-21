@@ -16,20 +16,21 @@ import {
 } from '../controllers/mentorshipSubscriptionController';
 import { authenticate } from '../middleware/auth';
 import { validateRequest } from '../middleware/validateRequest';
+import { asHandler } from '../utils/routeHelpers';
 
 const router = Router();
 
-router.get('/', authenticate, getMentorships);
-router.get('/subscriptions/me', authenticate, getMySubscriptions);
-router.get('/subscribers/all', authenticate, getAllMentorSubscribers);
+router.get('/', authenticate as any, asHandler(getMentorships));
+router.get('/subscriptions/me', authenticate as any, asHandler(getMySubscriptions));
+router.get('/subscribers/all', authenticate as any, asHandler(getAllMentorSubscribers));
 
 // Subscription routes with specific ID pattern
-router.post('/:id/subscriptions', authenticate, subscribeToMentorship);
-router.get('/:id/subscriptions/me', authenticate, checkSubscription);
-router.get('/:mentorshipId/subscribers', authenticate, getMentorshipSubscribers);
+router.post('/:id/subscriptions', authenticate as any, asHandler(subscribeToMentorship));
+router.get('/:id/subscriptions/me', authenticate as any, asHandler(checkSubscription));
+router.get('/:mentorshipId/subscribers', authenticate as any, asHandler(getMentorshipSubscribers));
 
 // CRUD routes
-router.get('/:id', authenticate, getMentorship);
+router.get('/:id', authenticate as any, asHandler(getMentorship));
 
 router.post(
   '/',
@@ -42,12 +43,12 @@ router.post(
     body('maxStudents').optional().isInt(),
   ],
   validateRequest,
-  createMentorship
+  asHandler(createMentorship)
 );
 
 router.put(
   '/:id',
-  authenticate,
+  authenticate as any,
   [
     body('title').optional().notEmpty(),
     body('description').optional().notEmpty(),
@@ -56,9 +57,9 @@ router.put(
     body('status').optional().isIn(['ACTIVE', 'INACTIVE', 'SUSPENDED']),
   ],
   validateRequest,
-  updateMentorship
+  asHandler(updateMentorship)
 );
 
-router.delete('/:id', authenticate, deleteMentorship);
+router.delete('/:id', authenticate as any, asHandler(deleteMentorship));
 
 export default router;

@@ -10,14 +10,15 @@ import {
 import { authenticate } from '../middleware/auth';
 import { authorize } from '../middleware/authorize';
 import { validateRequest } from '../middleware/validateRequest';
+import { asHandler } from '../utils/routeHelpers';
 
 const router = Router();
 
-router.use(authenticate);
-router.use(authorize('ADMIN'));
+router.use(authenticate as any);
+router.use(authorize('ADMIN') as any);
 
-router.get('/', getAllPermissions);
-router.get('/:id', getPermission);
+router.get('/', asHandler(getAllPermissions));
+router.get('/:id', asHandler(getPermission));
 router.post(
   '/',
   [
@@ -27,7 +28,7 @@ router.post(
     body('description').optional().isString(),
   ],
   validateRequest,
-  createPermission
+  asHandler(createPermission)
 );
 router.put(
   '/:id',
@@ -38,8 +39,8 @@ router.put(
     body('description').optional().isString(),
   ],
   validateRequest,
-  updatePermission
+  asHandler(updatePermission)
 );
-router.delete('/:id', deletePermission);
+router.delete('/:id', asHandler(deletePermission));
 
 export default router;

@@ -258,7 +258,7 @@ export const logout = async (
     if (userId) {
       const user = await User.findByPk(userId);
       if (user) {
-        user.refreshToken = null;
+        user.refreshToken = undefined;
         await user.save();
 
         // Audit log
@@ -283,12 +283,13 @@ export const logout = async (
 };
 
 export const getMe = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.userId;
+    const authReq = req as AuthRequest;
+    const userId = authReq.user?.userId;
 
     if (!userId) {
       throw new AppError('Usuário não autenticado', 401);
@@ -459,7 +460,7 @@ export const resetPassword = async (
     await user.save();
 
     // Invalidar refresh token (forçar logout de outros dispositivos)
-    user.refreshToken = null;
+    user.refreshToken = undefined;
     await user.save();
 
     // Audit log

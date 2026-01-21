@@ -9,6 +9,7 @@ import {
 } from '../controllers/stripeController';
 import { authenticate } from '../middleware/auth';
 import { validateRequest } from '../middleware/validateRequest';
+import { asHandler } from '../utils/routeHelpers';
 import express from 'express';
 
 const router = Router();
@@ -20,9 +21,9 @@ router.post(
   webhook
 );
 
-router.use(authenticate);
+router.use(authenticate as any);
 
-router.get('/subscription', getSubscription);
+router.get('/subscription', asHandler(getSubscription));
 
 router.post(
   '/subscription',
@@ -31,10 +32,10 @@ router.post(
     body('plan').isIn(['MONTHLY', 'ANNUAL']).withMessage('Plan deve ser MONTHLY ou ANNUAL'),
   ],
   validateRequest,
-  createSubscriptionCheckout
+  asHandler(createSubscriptionCheckout)
 );
 
-router.post('/subscription/cancel', cancelUserSubscription);
+router.post('/subscription/cancel', asHandler(cancelUserSubscription));
 
 router.post(
   '/payment',
@@ -44,7 +45,7 @@ router.post(
     body('description').optional().isString(),
   ],
   validateRequest,
-  createPayment
+  asHandler(createPayment)
 );
 
 export default router;

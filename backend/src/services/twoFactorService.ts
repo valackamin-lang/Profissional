@@ -66,6 +66,6 @@ export const disableTwoFactor = async (userId: string, token: string): Promise<v
   }
 
   user.twoFactorEnabled = false;
-  user.twoFactorSecret = null;
+  user.twoFactorSecret = undefined;
   await user.save();
 };

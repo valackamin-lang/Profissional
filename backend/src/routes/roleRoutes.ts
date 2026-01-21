@@ -11,14 +11,15 @@ import {
 import { authenticate } from '../middleware/auth';
 import { authorize } from '../middleware/authorize';
 import { validateRequest } from '../middleware/validateRequest';
+import { asHandler } from '../utils/routeHelpers';
 
 const router = Router();
 
-router.use(authenticate);
-router.use(authorize('ADMIN'));
+router.use(authenticate as any);
+router.use(authorize('ADMIN') as any);
 
-router.get('/', getAllRoles);
-router.get('/:id', getRole);
+router.get('/', asHandler(getAllRoles));
+router.get('/:id', asHandler(getRole));
 router.post(
   '/',
   [
@@ -27,7 +28,7 @@ router.post(
     body('permissionIds').optional().isArray(),
   ],
   validateRequest,
-  createRole
+  asHandler(createRole)
 );
 router.put(
   '/:id',
@@ -37,16 +38,16 @@ router.put(
     body('permissionIds').optional().isArray(),
   ],
   validateRequest,
-  updateRole
+  asHandler(updateRole)
 );
-router.delete('/:id', deleteRole);
+router.delete('/:id', asHandler(deleteRole));
 router.post(
   '/:id/permissions',
   [
     body('permissionIds').isArray().withMessage('permissionIds deve ser um array'),
   ],
   validateRequest,
-  assignPermissions
+  asHandler(assignPermissions)
 );
 
 export default router;

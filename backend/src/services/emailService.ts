@@ -219,8 +219,8 @@ export const verifyEmailToken = async (token: string): Promise<User> => {
 
   // Marcar email como verificado
   user.isEmailVerified = true;
-  user.emailVerificationToken = null;
-  user.emailVerificationExpires = null;
+  user.emailVerificationToken = undefined;
+  user.emailVerificationExpires = undefined;
   await user.save();
 
   logger.info(`Email verificado para ${user.email}`);
@@ -361,8 +361,8 @@ export const verifyPasswordResetToken = async (token: string): Promise<User> => 
 export const clearPasswordResetToken = async (userId: string): Promise<void> => {
   const user = await User.findByPk(userId);
   if (user) {
-    user.resetPasswordToken = null;
-    user.resetPasswordExpires = null;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
     await user.save();
   }
 };

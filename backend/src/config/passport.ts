@@ -42,7 +42,7 @@ passport.use(
   )
 );
 
-passport.use(
+(passport.use as any)(
   new LinkedInStrategy(
     {
       clientID: process.env.LINKEDIN_CLIENT_ID || '',

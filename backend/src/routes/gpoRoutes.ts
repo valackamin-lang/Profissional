@@ -8,6 +8,7 @@ import {
 } from '../controllers/gpoController';
 import { authenticate } from '../middleware/auth';
 import { validateRequest } from '../middleware/validateRequest';
+import { asHandler } from '../utils/routeHelpers';
 import express from 'express';
 
 const router = Router();
@@ -20,7 +21,7 @@ router.post(
 );
 
 // Rotas autenticadas
-router.use(authenticate);
+router.use(authenticate as any);
 
 router.post(
   '/generate-token',
@@ -29,10 +30,10 @@ router.post(
     body('eventId').optional().isUUID(),
   ],
   validateRequest,
-  generatePurchaseToken
+  asHandler(generatePurchaseToken)
 );
 
-router.get('/:paymentId/status', checkPaymentStatus);
+router.get('/:paymentId/status', asHandler(checkPaymentStatus));
 
 router.get(
   '/check',
@@ -41,7 +42,7 @@ router.get(
     query('eventId').optional().isUUID(),
   ],
   validateRequest,
-  checkPaymentByResource
+  asHandler(checkPaymentByResource)
 );
 
 export default router;

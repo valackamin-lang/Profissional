@@ -1,4 +1,4 @@
-import { Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { Op } from 'sequelize';
 import User from '../models/User';
 import Profile from '../models/Profile';
@@ -8,16 +8,17 @@ import Mentorship from '../models/Mentorship';
 import AuditLog from '../models/AuditLog';
 import Notification from '../models/Notification';
 import Payment from '../models/Payment';
-import { AuthRequest } from '../middleware/auth';
+import { asAuthRequest } from '../middleware/auth';
 import { AppError } from '../utils/AppError';
 
 export const getDashboardStats = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.userId;
+    const authReq = asAuthRequest(req);
+    const userId = authReq.user?.userId;
     if (!userId) {
       throw new AppError('Usuário não autenticado', 401);
     }
@@ -159,12 +160,13 @@ export const getDashboardStats = async (
 };
 
 export const getAllUsers = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.userId;
+    const authReq = asAuthRequest(req);
+    const userId = authReq.user?.userId;
     if (!userId) {
       throw new AppError('Usuário não autenticado', 401);
     }
@@ -227,12 +229,13 @@ export const getAllUsers = async (
 };
 
 export const getAllContent = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.userId;
+    const authReq = asAuthRequest(req);
+    const userId = authReq.user?.userId;
     if (!userId) {
       throw new AppError('Usuário não autenticado', 401);
     }
@@ -319,12 +322,13 @@ export const getAllContent = async (
 };
 
 export const updateUserStatus = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.userId;
+    const authReq = asAuthRequest(req);
+    const userId = authReq.user?.userId;
     const { targetUserId } = req.params;
     const { isActive } = req.body;
 

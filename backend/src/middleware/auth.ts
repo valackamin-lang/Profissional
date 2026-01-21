@@ -6,8 +6,13 @@ export interface AuthRequest extends Request {
   user?: TokenPayload;
 }
 
+// Helper para converter Request para AuthRequest
+export const asAuthRequest = (req: Request): AuthRequest => {
+  return req as AuthRequest;
+};
+
 export const authenticate = (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): void => {
@@ -21,7 +26,7 @@ export const authenticate = (
     const token = authHeader.substring(7);
     const decoded = verifyAccessToken(token);
 
-    req.user = decoded;
+    (req as AuthRequest).user = decoded;
     next();
   } catch (error) {
     if (error instanceof AppError) {

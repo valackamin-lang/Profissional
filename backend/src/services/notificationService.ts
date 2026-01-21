@@ -81,6 +81,11 @@ const sendEmailNotification = async (
       </div>
     `;
 
+    if (!emailTransporter) {
+      console.warn('⚠️  SMTP não configurado. Email não será enviado.');
+      return;
+    }
+
     await emailTransporter.sendMail({
       from: process.env.SMTP_USER,
       to: user.email,

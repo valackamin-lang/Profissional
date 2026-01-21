@@ -65,7 +65,7 @@ export const generateFeed = async (userId?: string, page: number = 1, limit: num
   const feedItems = await FeedItem.findAll({
     where: {
       [Op.or]: [
-        { expiresAt: null },
+        { expiresAt: null as any },
         { expiresAt: { [Op.gt]: new Date() } },
       ],
     },

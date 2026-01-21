@@ -19,21 +19,21 @@ import { validateRequest } from '../middleware/validateRequest';
 
 const router = Router();
 
-router.get('/', authenticate, getEvents);
-router.get('/registrations/me', authenticate, getMyRegistrations);
-router.get('/attendees/all', authenticate, getAllOrganizerAttendees);
+router.get('/', authenticate as any, getEvents as any);
+router.get('/registrations/me', authenticate as any, getMyRegistrations as any);
+router.get('/attendees/all', authenticate as any, getAllOrganizerAttendees as any);
 
 // Registration routes with specific ID pattern
-router.post('/:id/registrations', authenticate, registerToEvent);
-router.get('/:id/registrations/me', authenticate, checkRegistration);
-router.get('/:eventId/attendees', authenticate, getEventAttendees);
+router.post('/:id/registrations', authenticate as any, registerToEvent as any);
+router.get('/:id/registrations/me', authenticate as any, checkRegistration as any);
+router.get('/:eventId/attendees', authenticate as any, getEventAttendees as any);
 
 // CRUD routes
-router.get('/:id', authenticate, getEvent);
+router.get('/:id', authenticate as any, getEvent as any);
 
 router.post(
   '/',
-  authenticate,
+  authenticate as any,
   [
     body('title').notEmpty().withMessage('Título é obrigatório'),
     body('description').notEmpty().withMessage('Descrição é obrigatória'),
@@ -43,12 +43,12 @@ router.post(
     body('maxAttendees').optional().isInt(),
   ],
   validateRequest,
-  createEvent
+  createEvent as any
 );
 
 router.put(
   '/:id',
-  authenticate,
+  authenticate as any,
   [
     body('title').optional().notEmpty(),
     body('description').optional().notEmpty(),
@@ -56,9 +56,9 @@ router.put(
     body('status').optional().isIn(['UPCOMING', 'LIVE', 'ENDED', 'CANCELLED']),
   ],
   validateRequest,
-  updateEvent
+  updateEvent as any
 );
 
-router.delete('/:id', authenticate, deleteEvent);
+router.delete('/:id', authenticate as any, deleteEvent as any);
 
 export default router;

@@ -436,7 +436,7 @@ export const getApplication = async (
     });
 
     const isApplicant = application.applicantId === profile.id;
-    const isJobOwner = application.job.postedBy === profile.id;
+    const isJobOwner = application.job?.postedBy === profile.id;
     const isAdmin = user?.role?.name === 'ADMIN';
 
     if (!isApplicant && !isJobOwner && !isAdmin) {

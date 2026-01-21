@@ -1,17 +1,18 @@
-import { Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import AuditLog from '../models/AuditLog';
 import User from '../models/User';
-import { AuthRequest } from '../middleware/auth';
+import { asAuthRequest } from '../middleware/auth';
 import { AppError } from '../utils/AppError';
 import { Op } from 'sequelize';
 
 export const getAuditLogs = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.userId;
+    const authReq = asAuthRequest(req);
+    const userId = authReq.user?.userId;
     if (!userId) {
       throw new AppError('Usuário não autenticado', 401);
     }
@@ -81,12 +82,13 @@ export const getAuditLogs = async (
 };
 
 export const getAuditReport = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.userId;
+    const authReq = asAuthRequest(req);
+    const userId = authReq.user?.userId;
     if (!userId) {
       throw new AppError('Usuário não autenticado', 401);
     }
@@ -149,12 +151,13 @@ export const getAuditReport = async (
 };
 
 export const getTransactionLogs = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.userId;
+    const authReq = asAuthRequest(req);
+    const userId = authReq.user?.userId;
     if (!userId) {
       throw new AppError('Usuário não autenticado', 401);
     }

@@ -203,7 +203,7 @@ export const handleCallback = async (
             await EventRegistration.create({
               eventId: payment.eventId,
               attendeeId: profile.id,
-              status: 'CONFIRMED',
+              status: 'REGISTERED',
             });
           }
         }

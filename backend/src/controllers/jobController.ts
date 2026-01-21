@@ -19,8 +19,8 @@ export const createJob = async (
     }
 
     const profile = await Profile.findOne({ where: { userId } });
-    if (!profile || (profile.type !== 'PARTNER' && profile.type !== 'COMPANY')) {
-      throw new AppError('Apenas empresas parceiras podem publicar vagas', 403);
+    if (!profile || profile.type !== 'COMPANY') {
+      throw new AppError('Apenas empresas podem publicar vagas', 403);
     }
 
     if (profile.approvalStatus !== 'APPROVED') {

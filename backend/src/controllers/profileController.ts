@@ -1,20 +1,21 @@
-import { Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import Profile from '../models/Profile';
 import User from '../models/User';
 import Mentorship from '../models/Mentorship';
-import { AuthRequest } from '../middleware/auth';
+import { asAuthRequest } from '../middleware/auth';
 import { AppError } from '../utils/AppError';
 import AuditLog from '../models/AuditLog';
 import { authorize } from '../middleware/authorize';
 import { Op } from 'sequelize';
 
 export const getProfile = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.userId;
+    const authReq = asAuthRequest(req);
+    const userId = authReq.user?.userId;
     const profileId = req.params.id || userId;
 
     if (!userId) {
@@ -62,12 +63,13 @@ export const getProfile = async (
 };
 
 export const createProfile = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.userId;
+    const authReq = asAuthRequest(req);
+    const userId = authReq.user?.userId;
     if (!userId) {
       throw new AppError('Usuário não autenticado', 401);
     }
@@ -127,12 +129,13 @@ export const createProfile = async (
 };
 
 export const updateProfile = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.userId;
+    const authReq = asAuthRequest(req);
+    const userId = authReq.user?.userId;
     const profileId = req.params.id || userId;
 
     if (!userId) {
@@ -207,12 +210,13 @@ export const updateProfile = async (
 };
 
 export const deleteProfile = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.userId;
+    const authReq = asAuthRequest(req);
+    const userId = authReq.user?.userId;
     const profileId = req.params.id;
 
     if (!userId) {
@@ -252,12 +256,13 @@ export const deleteProfile = async (
 };
 
 export const getMentorStats = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.userId;
+    const authReq = asAuthRequest(req);
+    const userId = authReq.user?.userId;
     const profileId = req.params.id;
 
     if (!userId) {
@@ -317,12 +322,13 @@ export const getMentorStats = async (
 };
 
 export const listProfiles = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const userId = req.user?.userId;
+    const authReq = asAuthRequest(req);
+    const userId = authReq.user?.userId;
     if (!userId) {
       throw new AppError('Usuário não autenticado', 401);
     }

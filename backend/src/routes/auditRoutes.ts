@@ -9,11 +9,11 @@ import { authorize } from '../middleware/authorize';
 
 const router = Router();
 
-router.use(authenticate);
-router.use(authorize('ADMIN'));
+router.use(authenticate as any);
+router.use(authorize('ADMIN') as any);
 
-router.get('/logs', getAuditLogs);
-router.get('/report', getAuditReport);
-router.get('/transactions', getTransactionLogs);
+router.get('/logs', getAuditLogs as any);
+router.get('/report', getAuditReport as any);
+router.get('/transactions', getTransactionLogs as any);
 
 export default router;

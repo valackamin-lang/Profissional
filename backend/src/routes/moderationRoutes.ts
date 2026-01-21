@@ -9,26 +9,27 @@ import {
 import { authenticate } from '../middleware/auth';
 import { authorize } from '../middleware/authorize';
 import { validateRequest } from '../middleware/validateRequest';
+import { asHandler } from '../utils/routeHelpers';
 
 const router = Router();
 
-router.use(authenticate);
-router.use(authorize('ADMIN'));
+router.use(authenticate as any);
+router.use(authorize('ADMIN') as any);
 
-router.get('/approvals', getPendingApprovals);
+router.get('/approvals', asHandler(getPendingApprovals));
 
 router.put(
   '/approve/:profileId',
   [body('notes').optional().isString()],
   validateRequest,
-  approveProfile
+  asHandler(approveProfile)
 );
 
 router.put(
   '/reject/:profileId',
   [body('notes').notEmpty().withMessage('Notas de rejeição são obrigatórias')],
   validateRequest,
-  rejectProfile
+  asHandler(rejectProfile)
 );
 
 router.post(
@@ -40,7 +41,7 @@ router.post(
     body('reason').optional().isString(),
   ],
   validateRequest,
-  moderateContent
+  asHandler(moderateContent)
 );
 
 export default router;

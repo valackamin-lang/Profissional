@@ -31,8 +31,8 @@ router.post(
 );
 
 router.post('/refresh', refresh);
-router.post('/logout', authenticate, logout);
-router.get('/me', authenticate, getMe);
+router.post('/logout', authenticate as any, logout as any);
+router.get('/me', authenticate as any, getMe as any);
 
 // Email verification routes
 router.get('/verify-email', verifyEmail);

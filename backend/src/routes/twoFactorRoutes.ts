@@ -3,32 +3,33 @@ import { body } from 'express-validator';
 import { generateSecret, enable, disable, verify } from '../controllers/twoFactorController';
 import { authenticate } from '../middleware/auth';
 import { validateRequest } from '../middleware/validateRequest';
+import { asHandler } from '../utils/routeHelpers';
 
 const router = Router();
 
-router.use(authenticate);
+router.use(authenticate as any);
 
-router.get('/generate', generateSecret);
+router.get('/generate', asHandler(generateSecret));
 
 router.post(
   '/enable',
   [body('token').notEmpty().withMessage('Token 2FA é obrigatório')],
   validateRequest,
-  enable
+  asHandler(enable)
 );
 
 router.post(
   '/disable',
   [body('token').notEmpty().withMessage('Token 2FA é obrigatório')],
   validateRequest,
-  disable
+  asHandler(disable)
 );
 
 router.post(
   '/verify',
   [body('token').notEmpty().withMessage('Token 2FA é obrigatório')],
   validateRequest,
-  verify
+  asHandler(verify)
 );
 
 export default router;

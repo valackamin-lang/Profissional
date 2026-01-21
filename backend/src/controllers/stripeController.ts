@@ -52,8 +52,8 @@ export const createSubscriptionCheckout = async (
       success: true,
       data: {
         subscriptionId: subscription.id,
-        clientSecret: (subscription.latest_invoice as Stripe.Invoice)?.payment_intent
-          ? ((subscription.latest_invoice as Stripe.Invoice).payment_intent as Stripe.PaymentIntent).client_secret
+        clientSecret: (subscription.latest_invoice as any)?.payment_intent
+          ? ((subscription.latest_invoice as any).payment_intent as any).client_secret
           : null,
       },
     });
@@ -135,7 +135,7 @@ export const webhook = async (
     return;
   }
 
-  let event: Stripe.Event;
+  let event: any;
 
   try {
     event = stripe.webhooks.constructEvent(

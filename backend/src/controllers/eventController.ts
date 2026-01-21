@@ -19,8 +19,8 @@ export const createEvent = async (
     }
 
     const profile = await Profile.findOne({ where: { userId } });
-    if (!profile || (profile.type !== 'PARTNER' && profile.type !== 'COMPANY' && profile.type !== 'MENTOR')) {
-      throw new AppError('Apenas parceiros, empresas e mentores podem criar eventos', 403);
+    if (!profile || (profile.type !== 'COMPANY' && profile.type !== 'MENTOR')) {
+      throw new AppError('Apenas empresas e mentores podem criar eventos', 403);
     }
 
     if (profile.approvalStatus !== 'APPROVED') {

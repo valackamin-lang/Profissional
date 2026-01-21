@@ -6,10 +6,11 @@ import {
 } from '../controllers/videoController';
 import { authenticate } from '../middleware/auth';
 import { validateRequest } from '../middleware/validateRequest';
+import { asHandler } from '../utils/routeHelpers';
 
 const router = Router();
 
-router.use(authenticate);
+router.use(authenticate as any);
 
 router.post(
   '/event',
@@ -21,9 +22,9 @@ router.post(
     body('duration').optional().isInt().withMessage('Duration deve ser um número'),
   ],
   validateRequest,
-  createEventVideo
+  asHandler(createEventVideo)
 );
 
-router.get('/event/:eventId', getEventVideoLink);
+router.get('/event/:eventId', asHandler(getEventVideoLink));
 
 export default router;

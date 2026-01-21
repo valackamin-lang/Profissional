@@ -23,8 +23,8 @@ export const getStats = async (
       throw new AppError('Perfil não encontrado', 404);
     }
 
-    if (profile.type !== 'MENTOR' && profile.type !== 'PARTNER' && profile.type !== 'COMPANY') {
-      throw new AppError('Apenas mentores e parceiros podem ver comissões', 403);
+    if (profile.type !== 'MENTOR' && profile.type !== 'COMPANY') {
+      throw new AppError('Apenas mentores e empresas podem ver comissões', 403);
     }
 
     const stats = await getCommissionStats(profile.id);
@@ -56,8 +56,8 @@ export const getHistory = async (
       throw new AppError('Perfil não encontrado', 404);
     }
 
-    if (profile.type !== 'MENTOR' && profile.type !== 'PARTNER' && profile.type !== 'COMPANY') {
-      throw new AppError('Apenas mentores e parceiros podem ver histórico de comissões', 403);
+    if (profile.type !== 'MENTOR' && profile.type !== 'COMPANY') {
+      throw new AppError('Apenas mentores e empresas podem ver histórico de comissões', 403);
     }
 
     const { payments, total } = await getCommissionHistory(profile.id, Number(page), Number(limit));

@@ -10,12 +10,12 @@ import { authorize } from '../middleware/authorize';
 
 const router = Router();
 
-router.use(authenticate);
-router.use(authorize('ADMIN'));
+router.use(authenticate as any);
+router.use(authorize('ADMIN') as any);
 
-router.get('/dashboard/stats', getDashboardStats);
-router.get('/users', getAllUsers);
-router.get('/content', getAllContent);
-router.put('/users/:targetUserId/status', updateUserStatus);
+router.get('/dashboard/stats', getDashboardStats as any);
+router.get('/users', getAllUsers as any);
+router.get('/content', getAllContent as any);
+router.put('/users/:targetUserId/status', updateUserStatus as any);
 
 export default router;

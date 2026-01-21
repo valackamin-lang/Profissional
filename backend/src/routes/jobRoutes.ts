@@ -17,14 +17,15 @@ import {
 } from '../controllers/jobApplicationController';
 import { authenticate } from '../middleware/auth';
 import { validateRequest } from '../middleware/validateRequest';
+import { asHandler } from '../utils/routeHelpers';
 
 const router = Router();
 
-router.get('/', authenticate, getJobs);
-router.get('/applications/me', authenticate, getMyApplications);
-router.get('/applications/all', authenticate, getAllCompanyApplications);
-router.get('/applications/:id', authenticate, getApplication);
-router.get('/:id', authenticate, getJob);
+router.get('/', authenticate as any, asHandler(getJobs));
+router.get('/applications/me', authenticate as any, asHandler(getMyApplications));
+router.get('/applications/all', authenticate as any, asHandler(getAllCompanyApplications));
+router.get('/applications/:id', authenticate as any, asHandler(getApplication));
+router.get('/:id', authenticate as any, asHandler(getJob));
 
 router.post(
   '/',
@@ -41,12 +42,12 @@ router.post(
     body('applicationDeadline').optional().isISO8601(),
   ],
   validateRequest,
-  createJob
+  asHandler(createJob)
 );
 
 router.put(
   '/:id',
-  authenticate,
+  authenticate as any,
   [
     body('title').optional().notEmpty(),
     body('description').optional().notEmpty(),
@@ -55,34 +56,34 @@ router.put(
     body('status').optional().isIn(['OPEN', 'CLOSED', 'PAUSED']),
   ],
   validateRequest,
-  updateJob
+  asHandler(updateJob)
 );
 
-router.delete('/:id', authenticate, deleteJob);
+router.delete('/:id', authenticate as any, asHandler(deleteJob));
 
 // Application routes
 router.post(
   '/:jobId/applications',
-  authenticate,
+  authenticate as any,
   [
     body('coverLetter').optional().isString(),
     body('resume').optional().isString(),
   ],
   validateRequest,
-  applyToJob
+  asHandler(applyToJob)
 );
 
-router.get('/:jobId/applications/:id', authenticate, getApplication);
-router.get('/:jobId/applications', authenticate, getApplications);
+router.get('/:jobId/applications/:id', authenticate as any, asHandler(getApplication));
+router.get('/:jobId/applications', authenticate as any, asHandler(getApplications));
 router.put(
   '/applications/:id',
-  authenticate,
+  authenticate as any,
   [
     body('status').isIn(['PENDING', 'REVIEWED', 'ACCEPTED', 'REJECTED']).withMessage('Status inválido'),
     body('notes').optional().isString(),
   ],
   validateRequest,
-  updateApplicationStatus
+  asHandler(updateApplicationStatus)
 );
 
 export default router;

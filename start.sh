@@ -31,7 +31,11 @@ fi
 
 if [ ! -f frontend/.env.local ]; then
     echo -e "${YELLOW}📝 Criando frontend/.env.local...${NC}"
-    cp frontend/env.example.txt frontend/.env.local
+    if [ -f frontend/.env.example ]; then
+        cp frontend/.env.example frontend/.env.local
+    else
+        echo "NEXT_PUBLIC_API_URL=http://localhost:3001" > frontend/.env.local
+    fi
     echo -e "${GREEN}✅ frontend/.env.local criado.${NC}"
 fi
 
