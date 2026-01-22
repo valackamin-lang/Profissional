@@ -31,7 +31,7 @@ export class GPOService {
   constructor() {
     this.apiUrl =
       process.env.GPO_API_URL ||
-      'https://cerpagamentonline.emis.co.ao/online-payment-gateway/portal/frameToken';
+      'https://cerpagamentonline.emis.co.ao/online-payment-gateway/webframe/v1/frameToken';
     this.frameToken = process.env.GPO_FRAME_TOKEN || '';
     this.callbackUrl =
       process.env.GPO_CALLBACK_URL ||
@@ -141,14 +141,38 @@ export class GPOService {
       return response.data;
     } catch (error: any) {
       if (error.response) {
-        // Se receber HTML, significa que a URL está errada
-        const errorData = typeof error.response.data === 'string' 
-          ? (error.response.data.includes('<!doctype html>') 
-              ? 'URL incorreta - recebido HTML em vez de JSON. Verifique GPO_API_URL no .env'
-              : error.response.data.substring(0, 200))
-          : JSON.stringify(error.response.data);
+        const status = error.response.status;
+        let errorMessage = '';
+        
+        // Tratar diferentes tipos de erro
+        if (typeof error.response.data === 'string') {
+          if (error.response.data.includes('<!doctype html>')) {
+            errorMessage = 'URL incorreta - recebido HTML em vez de JSON. Verifique GPO_API_URL no .env';
+          } else {
+            errorMessage = error.response.data.substring(0, 200);
+          }
+        } else if (error.response.data && typeof error.response.data === 'object') {
+          // Erro estruturado do GPO
+          if (error.response.data.message) {
+            errorMessage = error.response.data.message;
+          } else if (error.response.data.code) {
+            errorMessage = `Código: ${error.response.data.code} - ${error.response.data.message || 'Erro desconhecido'}`;
+          } else {
+            errorMessage = JSON.stringify(error.response.data);
+          }
+        } else {
+          errorMessage = JSON.stringify(error.response.data);
+        }
+        
+        // Mensagens específicas para códigos de erro comuns
+        if (status === 400 && errorMessage.includes('invalid frame token')) {
+          errorMessage = 'Token do frame inválido ou expirado. Verifique GPO_FRAME_TOKEN no .env e certifique-se de que o token está correto e ativo.';
+        } else if (status === 400 && errorMessage.includes('Merchant Token is required')) {
+          errorMessage = 'Token do merchant é obrigatório. Verifique se GPO_FRAME_TOKEN está configurado no .env';
+        }
+        
         throw new Error(
-          `Erro ao comunicar com GPO: ${error.response.status} - ${errorData}`
+          `Erro ao comunicar com GPO (${status}): ${errorMessage}`
         );
       }
       throw new Error(`Erro ao comunicar com GPO: ${error.message}`);
