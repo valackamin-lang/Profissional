@@ -114,7 +114,18 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ chat, currentUserId: pro
     };
 
     container.addEventListener('scroll', handleScroll, { passive: true });
-    return () => container.removeEventListener('scroll', handleScroll);
+    return () => {
+      // Capturar o container atual no momento da limpeza
+      const currentContainer = messagesContainerRef.current;
+      if (currentContainer) {
+        try {
+          currentContainer.removeEventListener('scroll', handleScroll);
+        } catch (error) {
+          // Ignorar erros se o elemento já foi removido
+          console.warn('Error removing scroll listener:', error);
+        }
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasMore, loadingMore, loading, page]);
 

@@ -88,18 +88,22 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
 
   // Fechar menu ao clicar fora
   useEffect(() => {
+    if (!menuOpen) return;
+
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setMenuOpen(false);
       }
     };
 
-    if (menuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      try {
+        document.removeEventListener('mousedown', handleClickOutside);
+      } catch (error) {
+        // Ignorar erros de remoção se o documento já foi limpo
+        console.warn('Error removing click listener:', error);
+      }
     };
   }, [menuOpen]);
 

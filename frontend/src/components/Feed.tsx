@@ -81,7 +81,14 @@ export const Feed: React.FC = () => {
     };
 
     window.addEventListener('scroll', throttledHandleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', throttledHandleScroll);
+    return () => {
+      try {
+        window.removeEventListener('scroll', throttledHandleScroll);
+      } catch (error) {
+        // Ignorar erros de remoção se o elemento já foi removido
+        console.warn('Error removing scroll listener:', error);
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, loadingMore, hasMore]);
 

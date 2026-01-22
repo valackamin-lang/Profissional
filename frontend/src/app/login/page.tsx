@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '../../contexts/AuthContext';
 import api from '../../lib/api';
@@ -17,7 +16,6 @@ export default function LoginPage() {
   const [emailNotVerified, setEmailNotVerified] = useState(false);
   const [userEmail, setUserEmail] = useState('');
   const { login } = useAuth();
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,22 +25,26 @@ export default function LoginPage() {
     try {
       await login(email, password);
       
+      // Aguardar um pouco para garantir que o estado foi atualizado
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       // Verificar se o email está verificado
       try {
         const response = await api.get('/auth/me');
         if (response.data.data?.user && !response.data.data.user.isEmailVerified) {
           setEmailNotVerified(true);
           setUserEmail(email);
+          setLoading(false);
         } else {
-          router.push('/');
+          // Usar window.location.href para redirecionamento mais seguro
+          window.location.href = '/';
         }
       } catch {
         // Se não conseguir verificar, continuar normalmente
-        router.push('/');
+        window.location.href = '/';
       }
     } catch (err: any) {
       setError(err.response?.data?.error?.message || err.message || 'Erro ao fazer login');
-    } finally {
       setLoading(false);
     }
   };
@@ -91,7 +93,7 @@ export default function LoginPage() {
                     <button
                       onClick={() => {
                         setEmailNotVerified(false);
-                        router.push('/');
+                        window.location.href = '/';
                       }}
                       className="block w-full text-center px-4 py-3 border-2 border-yellow-300 text-yellow-700 rounded-lg hover:bg-yellow-50 transition-all font-medium"
                     >

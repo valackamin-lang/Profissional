@@ -51,18 +51,22 @@ export const Header: React.FC = () => {
 
   // Fechar menu ao clicar fora
   useEffect(() => {
+    if (!profileMenuOpen) return;
+
     const handleClickOutside = (event: MouseEvent) => {
       if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
         setProfileMenuOpen(false);
       }
     };
 
-    if (profileMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      try {
+        document.removeEventListener('mousedown', handleClickOutside);
+      } catch (error) {
+        // Ignorar erros de remoção se o documento já foi limpo
+        console.warn('Error removing click listener:', error);
+      }
     };
   }, [profileMenuOpen]);
 

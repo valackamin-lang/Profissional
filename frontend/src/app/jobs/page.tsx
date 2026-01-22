@@ -70,7 +70,9 @@ export default function JobsPage() {
     }, 500);
     setSearchDebounce(timeout);
     return () => {
-      if (timeout) clearTimeout(timeout);
+      if (timeout) {
+        clearTimeout(timeout);
+      }
     };
   }, [filters.search]);
 
