@@ -7,6 +7,7 @@ import {
   createComment,
   getComments,
   sharePost,
+  updatePost,
   deletePost,
 } from '../controllers/postController';
 import { authenticate } from '../middleware/auth';
@@ -35,6 +36,9 @@ router.get('/:id/comments', authenticate as any, asHandler(getComments));
 
 // Compartilhar post
 router.post('/:id/share', authenticate as any, asHandler(sharePost));
+
+// Atualizar post
+router.put('/:id', authenticate as any, uploadPostMedia, asHandler(updatePost));
 
 // Deletar post
 router.delete('/:id', authenticate as any, asHandler(deletePost));

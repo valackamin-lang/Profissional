@@ -23,6 +23,7 @@ import {
   PostShare,
   Chat,
   Message,
+  Follow,
 } from '../models';
 // Removed seed import - seeders are now in separate files
 
@@ -58,6 +59,10 @@ export const syncDatabase = async (force: boolean = false): Promise<void> => {
     await Chat.sync({ force });
     await Message.sync({ force });
     logger.info('✅ Chat models synced');
+    
+    logger.info('👥 Syncing Follow models...');
+    await Follow.sync({ force });
+    logger.info('✅ Follow models synced');
 
     logger.info('✅ Database synced successfully.');
   } catch (error) {

@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 import User from './User';
 
-export type NotificationType = 'JOB' | 'EVENT' | 'MENTORSHIP' | 'APPLICATION' | 'SYSTEM';
+export type NotificationType = 'JOB' | 'EVENT' | 'MENTORSHIP' | 'APPLICATION' | 'SYSTEM' | 'FOLLOW';
 export type NotificationStatus = 'UNREAD' | 'READ';
 
 export interface NotificationAttributes {
@@ -53,7 +53,7 @@ Notification.init(
       },
     },
     type: {
-      type: DataTypes.ENUM('JOB', 'EVENT', 'MENTORSHIP', 'APPLICATION', 'SYSTEM'),
+      type: DataTypes.ENUM('JOB', 'EVENT', 'MENTORSHIP', 'APPLICATION', 'SYSTEM', 'FOLLOW'),
       allowNull: false,
     },
     title: {

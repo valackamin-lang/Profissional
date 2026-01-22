@@ -17,6 +17,12 @@
 - ✅ Gestão de Conteúdo
 - ✅ Sistema de Inscrições (Mentorias, Eventos, Vagas)
 - ✅ Upload de arquivos (avatar, resume, logo)
+- ✅ **Sistema de Posts Completo** (criação, edição, exclusão, mídia)
+- ✅ **Interações em Posts** (likes, comentários, compartilhamentos)
+- ✅ **Sistema de Chat em Tempo Real** (Socket.io, mensagens, mídia)
+- ✅ **Integração GPO** (Gateway de Pagamento Online - EMIS)
+- ✅ **Cache Redis** (otimização de performance para feed e posts)
+- ✅ **Botão "Iniciar Conversa"** nos perfis de usuários
 
 ## 🔴 Funcionalidades Faltantes (Alta Prioridade)
 
@@ -52,13 +58,15 @@
 
 ## 🟡 Funcionalidades Faltantes (Média Prioridade)
 
-### 5. Sistema de Pagamentos Completo
-**Descrição:** Integração real com Stripe para pagamentos
-- [ ] Configurar Stripe com chaves reais
-- [ ] Página de checkout para mentorias/eventos pagos
-- [ ] Webhook handler para atualizar status de pagamentos
-- [ ] Histórico de pagamentos do usuário
+### 5. Sistema de Pagamentos Completo ✅ (Parcial)
+**Descrição:** Integração com gateway de pagamento
+- [x] Integração GPO (Gateway de Pagamento Online - EMIS)
+- [x] Geração de token de compra
+- [x] Iframe de pagamento customizado
+- [x] Callback de status de pagamento
+- [ ] Histórico de pagamentos do usuário (visualização)
 - [ ] Reembolsos
+- [ ] Integração adicional com Stripe (opcional)
 
 ### 6. Integração de Vídeo Completa
 **Descrição:** Integração real com Zoom/YouTube
@@ -84,11 +92,11 @@
 ## 🟢 Funcionalidades Faltantes (Baixa Prioridade)
 
 ### 9. Melhorias de UX
-- [ ] Busca global na plataforma
-- [ ] Filtros avançados no feed
-- [ ] Ordenação de resultados
+- [ ] Busca global na plataforma (busca por tipo existe, falta busca unificada)
+- [x] Filtros avançados no feed (implementado por tipo)
+- [x] Ordenação de resultados (por data, relevância)
 - [ ] Favoritos/Salvos
-- [ ] Compartilhamento de conteúdo
+- [x] Compartilhamento de conteúdo (posts podem ser compartilhados)
 
 ### 10. Relatórios e Analytics
 - [ ] Relatórios de engajamento
@@ -113,15 +121,69 @@
 2. ✅ Histórico de Inscrições do Aluno
 3. ✅ Upload de Portfólio
 4. ✅ Gestão de Permissões e Roles
+5. ✅ Sistema de Posts Completo
+6. ✅ Sistema de Chat em Tempo Real
 
-### 🟡 Média Prioridade (Depois)
-5. Sistema de Pagamentos Completo
-6. Integração de Vídeo Completa
-7. Sistema de Comissões Completo
-8. Notificações Push
+### 🟡 Média Prioridade
+- ✅ Sistema de Pagamentos (GPO implementado, falta histórico visual)
+- ⏳ Integração de Vídeo Completa
+- ⏳ Sistema de Comissões Completo
+- ⏳ Notificações Push
 
 ### 🟢 Baixa Prioridade (Melhorias)
-9. Melhorias de UX
-10. Relatórios e Analytics
-11. Testes
-12. Documentação
+- ⏳ Melhorias de UX (busca global, favoritos)
+- ⏳ Relatórios e Analytics
+- ⏳ Testes
+- ⏳ Documentação
+
+## 🆕 Funcionalidades Recentemente Implementadas
+
+### Sistema de Posts (2024)
+- ✅ Criação de posts com texto e mídia (imagens/vídeos)
+- ✅ Sistema de likes com cache Redis
+- ✅ Sistema de comentários (com respostas aninhadas)
+- ✅ Sistema de compartilhamentos
+- ✅ Contadores em tempo real (com polling)
+- ✅ Visibilidade de posts (PUBLIC, FOLLOWERS, PRIVATE)
+- ✅ Seeders de posts de exemplo
+
+### Sistema de Chat (2024)
+- ✅ Chat em tempo real com Socket.io
+- ✅ Mensagens de texto e mídia
+- ✅ Lista de conversas com contador de não lidas
+- ✅ Status online/offline
+- ✅ Marcação de mensagens como lidas
+- ✅ Botão "Iniciar Conversa" nos perfis
+- ✅ Integração com Header (badge de não lidas)
+
+### Integração GPO (2024)
+- ✅ Integração com Gateway de Pagamento Online (EMIS)
+- ✅ Geração de token de compra
+- ✅ Iframe de pagamento customizado
+- ✅ Callback de status de pagamento
+- ✅ CSS customizado para iframe
+
+### Otimizações (2024)
+- ✅ Cache Redis para feed
+- ✅ Cache Redis para likes de posts
+- ✅ Invalidação inteligente de cache
+- ✅ Polling otimizado para atualizações em tempo real
+
+## 🔴 Funcionalidades Críticas Faltantes
+
+### 1. Sistema de Follow/Seguidores
+**Prioridade:** ALTA
+**Status:** Parcialmente preparado (modelo Post tem `visibility: 'FOLLOWERS'`, mas falta modelo Follow)
+- [ ] Modelo `Follow` (seguidor/seguido)
+- [ ] Botão "Seguir" nos perfis
+- [ ] Feed com posts de seguidores
+- [ ] Contadores de seguidores/seguindo
+- [ ] Lista de seguidores/seguindo no perfil
+
+### 2. Busca Global
+**Prioridade:** MÉDIA
+**Status:** Busca por tipo existe, falta busca unificada
+- [ ] Barra de busca global no header
+- [ ] Busca unificada (jobs, eventos, mentorias, posts, perfis)
+- [ ] Resultados categorizados
+- [ ] Sugestões de busca

@@ -73,24 +73,26 @@ export default function ChatPage() {
         <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="grid grid-cols-1 lg:grid-cols-3 h-[calc(100vh-8rem)]">
+            <div className="grid grid-cols-1 lg:grid-cols-3 h-[calc(100vh-8rem)] min-h-0">
               {/* Chat List */}
-              <div className="border-r border-gray-200 bg-white">
-                <div className="p-4 border-b border-gray-200">
+              <div className="border-r border-gray-200 bg-white flex flex-col min-h-0">
+                <div className="p-4 border-b border-gray-200 flex-shrink-0">
                   <h1 className="text-xl font-bold text-gray-900">Mensagens</h1>
                 </div>
-                <ChatList
-                  onSelectChat={setSelectedChat}
-                  selectedChatId={selectedChat?.id}
-                />
+                <div className="flex-1 min-h-0 overflow-hidden">
+                  <ChatList
+                    onSelectChat={setSelectedChat}
+                    selectedChatId={selectedChat?.id}
+                  />
+                </div>
               </div>
 
               {/* Chat Window */}
-              <div className="lg:col-span-2 bg-white">
+              <div className="lg:col-span-2 bg-white flex flex-col min-h-0">
                 {selectedChat ? (
                   <ChatWindow
                     chat={selectedChat}
-                    currentUserId={user.profile?.id || ''}
+                    currentUserId={user?.profile?.id || user?.id || ''}
                   />
                 ) : (
                   <div className="flex items-center justify-center h-full text-gray-500">

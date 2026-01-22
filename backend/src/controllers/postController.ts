@@ -136,10 +136,18 @@ export const getPosts = async (
     if (userId) {
       const profile = await Profile.findOne({ where: { userId } });
       if (profile) {
+        // Buscar IDs dos perfis que o usuário segue
+        const Follow = (await import('../models/Follow')).default;
+        const follows = await Follow.findAll({
+          where: { followerId: profile.id },
+          attributes: ['followingId'],
+        });
+        const followingIds = follows.map(f => f.followingId);
+        
         where[Op.or] = [
           { visibility: 'PUBLIC' },
           { authorId: profile.id }, // Próprios posts
-          // TODO: Adicionar lógica de seguidores quando implementar sistema de follow
+          { visibility: 'FOLLOWERS', authorId: { [Op.in]: followingIds } }, // Posts de seguidores
         ];
       }
     }
@@ -514,6 +522,122 @@ export const sharePost = async (
     res.status(201).json({
       success: true,
       data: { sharedPost },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Atualizar post
+export const updatePost = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      throw new AppError('Usuário não autenticado', 401);
+    }
+
+    const { id } = req.params;
+    const profile = await Profile.findOne({ where: { userId } });
+    if (!profile) {
+      throw new AppError('Perfil não encontrado', 404);
+    }
+
+    const post = await Post.findByPk(id);
+    if (!post) {
+      throw new AppError('Post não encontrado', 404);
+    }
+
+    // Verificar se é o autor ou admin
+    const Role = (await import('../models/Role')).default;
+    const user = await User.findByPk(userId, {
+      include: [{ model: Role, as: 'role' }],
+    });
+
+    const isOwner = post.authorId === profile.id;
+    const isAdmin = user?.role?.name === 'ADMIN';
+
+    if (!isOwner && !isAdmin) {
+      throw new AppError('Acesso negado', 403);
+    }
+
+    const { content, visibility } = req.body;
+
+    // Atualizar conteúdo se fornecido
+    if (content !== undefined) {
+      if (!content || content.trim().length === 0) {
+        throw new AppError('Conteúdo do post não pode estar vazio', 400);
+      }
+      post.content = content.trim();
+    }
+
+    // Atualizar visibilidade se fornecida
+    if (visibility !== undefined) {
+      post.visibility = visibility as 'PUBLIC' | 'FOLLOWERS' | 'PRIVATE';
+    }
+
+    // Processar nova mídia se houver
+    if (req.files && 'media' in req.files) {
+      const files = req.files as { media: Express.Multer.File[] };
+      const newMedia = files.media.map((file) => `/uploads/posts/${file.filename}`);
+      
+      // Determinar tipo de mídia
+      const hasImages = files.media.some(f => f.mimetype.startsWith('image/'));
+      const hasVideos = files.media.some(f => f.mimetype.startsWith('video/'));
+      
+      let newMediaType: 'image' | 'video' | 'mixed' | undefined;
+      if (hasImages && hasVideos) {
+        newMediaType = 'mixed';
+      } else if (hasVideos) {
+        newMediaType = 'video';
+      } else if (hasImages) {
+        newMediaType = 'image';
+      }
+
+      // Se houver mídia existente, adicionar nova (ou substituir se for apenas uma)
+      if (post.media && Array.isArray(post.media)) {
+        post.media = [...post.media, ...newMedia];
+      } else {
+        post.media = newMedia;
+      }
+      
+      if (newMediaType) {
+        post.mediaType = newMediaType;
+      }
+    }
+
+    await post.save();
+
+    // Invalidar cache
+    await invalidatePostCache(id);
+
+    // Audit log
+    await AuditLog.create({
+      userId,
+      action: 'UPDATE',
+      resource: 'POST',
+      resourceId: id,
+      ipAddress: req.ip,
+      userAgent: req.get('user-agent'),
+    });
+
+    // Buscar post atualizado com relacionamentos
+    const updatedPost = await Post.findByPk(id, {
+      include: [
+        {
+          model: Profile,
+          as: 'author',
+          include: [{ model: User, as: 'user', attributes: ['id', 'email'] }],
+        },
+      ],
+    });
+
+    res.json({
+      success: true,
+      data: { post: updatedPost },
     });
   } catch (error) {
     next(error);

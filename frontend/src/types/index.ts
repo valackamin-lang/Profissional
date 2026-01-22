@@ -23,6 +23,9 @@ export interface Profile {
   companyLogo?: string;
   approvalStatus?: 'PENDING' | 'APPROVED' | 'REJECTED';
   type: ProfileType;
+  followersCount?: number;
+  followingCount?: number;
+  isFollowing?: boolean;
   createdAt: string;
   updatedAt: string;
 }

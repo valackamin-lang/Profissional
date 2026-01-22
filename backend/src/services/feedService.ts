@@ -146,11 +146,32 @@ export const generateFeed = async (userId?: string, page: number = 1, limit: num
   
   // Buscar posts não cacheados do banco
   if (uncachedPostIds.length > 0) {
+    // Construir condições de visibilidade
+    const whereConditions: any = {
+      id: { [Op.in]: uncachedPostIds },
+    };
+
+    if (userProfile) {
+      // Buscar IDs dos perfis que o usuário segue
+      const Follow = (await import('../models/Follow')).default;
+      const follows = await Follow.findAll({
+        where: { followerId: userProfile.id },
+        attributes: ['followingId'],
+      });
+      const followingIds = follows.map(f => f.followingId);
+      
+      whereConditions[Op.or] = [
+        { visibility: 'PUBLIC' },
+        { visibility: 'FOLLOWERS', authorId: { [Op.in]: followingIds } }, // Posts de seguidores
+        { authorId: userProfile.id }, // Próprios posts
+      ];
+    } else {
+      // Usuário não autenticado - apenas posts públicos
+      whereConditions.visibility = 'PUBLIC';
+    }
+
     const dbPosts = await Post.findAll({
-      where: {
-        id: { [Op.in]: uncachedPostIds },
-        visibility: 'PUBLIC',
-      },
+      where: whereConditions,
       include: [
         {
           model: Profile,

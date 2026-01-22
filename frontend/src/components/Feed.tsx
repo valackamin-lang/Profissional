@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import api from '../lib/api';
 import { FeedItem, Job, Event, Mentorship, Post } from '../types';
@@ -20,19 +20,25 @@ import {
 export const Feed: React.FC = () => {
   const [feed, setFeed] = useState<FeedItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const feedContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      loadFeed();
+      loadFeed(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const loadFeed = async () => {
+  const loadFeed = async (isInitial = false) => {
     try {
-      setLoading(true);
+      if (isInitial) {
+        setLoading(true);
+      } else {
+        setLoadingMore(true);
+      }
       const response = await api.get(`/feed?page=${page}&limit=20`);
       const newItems = response.data.data.feed;
       setFeed((prev) => [...prev, ...newItems]);
@@ -42,6 +48,7 @@ export const Feed: React.FC = () => {
       console.error('Error loading feed:', error);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
 
@@ -49,17 +56,34 @@ export const Feed: React.FC = () => {
     if (typeof window === 'undefined') return;
 
     const handleScroll = () => {
-      if (window.innerHeight + window.scrollY >= document.documentElement.offsetHeight - 1000) {
-        if (!loading && hasMore) {
-          loadFeed();
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      
+      // Carregar mais quando estiver a 500px do final
+      if (scrollTop + windowHeight >= documentHeight - 500) {
+        if (!loading && !loadingMore && hasMore) {
+          loadFeed(false);
         }
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    // Throttle para melhor performance
+    let ticking = false;
+    const throttledHandleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', throttledHandleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', throttledHandleScroll);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, hasMore]);
+  }, [loading, loadingMore, hasMore]);
 
   if (loading && feed.length === 0) {
     return (
@@ -74,7 +98,7 @@ export const Feed: React.FC = () => {
     setFeed([]);
     setPage(1);
     setHasMore(true);
-    loadFeed();
+    loadFeed(true);
   };
 
   const handlePostUpdate = () => {
@@ -83,7 +107,7 @@ export const Feed: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div ref={feedContainerRef} className="max-w-3xl mx-auto space-y-6 pb-8">
       <CreatePost onPostCreated={handlePostCreated} />
       {feed.map((item) => {
         if (item.type === 'POST') {
@@ -91,14 +115,21 @@ export const Feed: React.FC = () => {
         }
         return <FeedCard key={item.id} item={item} />;
       })}
-      {loading && feed.length > 0 && (
+      {loadingMore && feed.length > 0 && (
         <div className="flex items-center justify-center p-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+          <div className="flex flex-col items-center space-y-2">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            <p className="text-sm text-gray-500">Carregando mais...</p>
+          </div>
         </div>
       )}
       {!hasMore && feed.length > 0 && (
         <div className="text-center py-8 text-gray-500">
-          <p>Você viu todas as publicações</p>
+          <div className="inline-flex items-center space-x-2">
+            <div className="h-px w-12 bg-gray-300"></div>
+            <p className="text-sm font-medium">Você viu todas as publicações</p>
+            <div className="h-px w-12 bg-gray-300"></div>
+          </div>
         </div>
       )}
     </div>

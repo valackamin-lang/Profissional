@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import User from '../models/User';
 import Role from '../models/Role';
+import Profile from '../models/Profile';
 import { hashPassword, comparePassword } from '../utils/bcrypt';
 import { generateAccessToken, generateRefreshToken } from '../utils/jwt';
 import { AppError } from '../utils/AppError';
@@ -296,13 +297,19 @@ export const getMe = async (
     }
 
     const user = await User.findByPk(userId, {
-      include: [{ model: Role, as: 'role' }],
+      include: [
+        { model: Role, as: 'role' },
+        { model: Profile, as: 'profile' },
+      ],
       attributes: { exclude: ['password', 'refreshToken', 'twoFactorSecret'] },
     });
 
     if (!user) {
       throw new AppError('Usuário não encontrado', 404);
     }
+
+    // Buscar profile separadamente se não vier no include
+    const profile = await Profile.findOne({ where: { userId: user.id } });
 
     res.json({
       success: true,
@@ -312,6 +319,7 @@ export const getMe = async (
           email: user.email,
           roleId: user.roleId,
           role: user.role?.name,
+          profile: profile || (user as any).profile,
           isEmailVerified: user.isEmailVerified,
           twoFactorEnabled: user.twoFactorEnabled,
         },

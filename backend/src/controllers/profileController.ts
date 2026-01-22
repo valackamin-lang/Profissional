@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import Profile from '../models/Profile';
 import User from '../models/User';
 import Mentorship from '../models/Mentorship';
+import Follow from '../models/Follow';
 import { asAuthRequest } from '../middleware/auth';
 import { AppError } from '../utils/AppError';
 import AuditLog from '../models/AuditLog';
@@ -53,9 +54,35 @@ export const getProfile = async (
       throw new AppError('Perfil não encontrado', 404);
     }
 
+    // Buscar contadores de seguidores/seguindo
+    const [followersCount, followingCount] = await Promise.all([
+      Follow.count({ where: { followingId: profile.id } }),
+      Follow.count({ where: { followerId: profile.id } }),
+    ]);
+
+    // Verificar se o usuário autenticado está seguindo este perfil
+    let isFollowing = false;
+    if (userId) {
+      const currentUserProfile = await Profile.findOne({ where: { userId } });
+      if (currentUserProfile && currentUserProfile.id !== profile.id) {
+        const follow = await Follow.findOne({
+          where: {
+            followerId: currentUserProfile.id,
+            followingId: profile.id,
+          },
+        });
+        isFollowing = !!follow;
+      }
+    }
+
+    const profileData = profile.toJSON();
+    (profileData as any).followersCount = followersCount;
+    (profileData as any).followingCount = followingCount;
+    (profileData as any).isFollowing = isFollowing;
+
     res.json({
       success: true,
-      data: { profile },
+      data: { profile: profileData },
     });
   } catch (error) {
     next(error);

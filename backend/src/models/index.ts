@@ -20,6 +20,7 @@ import PostComment from './PostComment';
 import PostShare from './PostShare';
 import Chat from './Chat';
 import Message from './Message';
+import Follow from './Follow';
 
 // User - Role relationship
 User.belongsTo(Role, { foreignKey: 'roleId', as: 'role' });
@@ -137,6 +138,12 @@ Message.belongsTo(Chat, { foreignKey: 'chatId', as: 'chat' });
 Profile.hasMany(Message, { foreignKey: 'senderId', as: 'sentMessages' });
 Message.belongsTo(Profile, { foreignKey: 'senderId', as: 'sender' });
 
+// Follow relationships
+Follow.belongsTo(Profile, { foreignKey: 'followerId', as: 'follower' });
+Follow.belongsTo(Profile, { foreignKey: 'followingId', as: 'following' });
+Profile.hasMany(Follow, { foreignKey: 'followerId', as: 'following' }); // Perfis que este perfil segue
+Profile.hasMany(Follow, { foreignKey: 'followingId', as: 'followers' }); // Perfis que seguem este perfil
+
 export {
   User,
   Role,
@@ -160,4 +167,5 @@ export {
   PostShare,
   Chat,
   Message,
+  Follow,
 };

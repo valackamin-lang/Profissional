@@ -102,6 +102,7 @@ import adminRoutes from './routes/adminRoutes';
 import roleRoutes from './routes/roleRoutes';
 import permissionRoutes from './routes/permissionRoutes';
 import gpoRoutes from './routes/gpoRoutes';
+import followRoutes from './routes/followRoutes';
 import passport from './config/passport';
 import Role from './models/Role';
 
@@ -117,6 +118,7 @@ app.use('/api/mentorships', mentorshipRoutes);
 app.use('/api/feed', feedRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/follow', followRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/stripe', stripeRoutes);
 app.use('/api/gpo', gpoRoutes);

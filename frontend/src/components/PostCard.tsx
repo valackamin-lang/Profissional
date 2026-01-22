@@ -3,12 +3,17 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import api from '../lib/api';
+import { useAuth } from '../contexts/AuthContext';
 import { Post, PostComment } from '../types';
 import {
   HeartIcon,
   ChatBubbleLeftIcon,
   ShareIcon,
   EllipsisHorizontalIcon,
+  PencilIcon,
+  TrashIcon,
+  XMarkIcon,
+  PhotoIcon,
 } from '@heroicons/react/24/outline';
 import {
   HeartIcon as HeartIconSolid,
@@ -20,6 +25,7 @@ interface PostCardProps {
 }
 
 export const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
+  const { user } = useAuth();
   const [isLiked, setIsLiked] = useState(post.isLiked || false);
   const [likesCount, setLikesCount] = useState(post.likesCount);
   const [commentsCount, setCommentsCount] = useState(post.commentsCount);
@@ -30,7 +36,17 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
   const [commentText, setCommentText] = useState('');
   const [postingComment, setPostingComment] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editContent, setEditContent] = useState(post.content || '');
+  const [editVisibility, setEditVisibility] = useState(post.visibility || 'PUBLIC');
+  const [editMedia, setEditMedia] = useState<File[]>([]);
+  const [editPreviews, setEditPreviews] = useState<string[]>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Atualizar dados do post periodicamente
   const updatePostData = useCallback(async () => {
@@ -66,7 +82,28 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
     setLikesCount(post.likesCount);
     setCommentsCount(post.commentsCount);
     setSharesCount(post.sharesCount);
-  }, [post.isLiked, post.likesCount, post.commentsCount, post.sharesCount]);
+    setEditContent(post.content || '');
+    setEditVisibility(post.visibility || 'PUBLIC');
+  }, [post.isLiked, post.likesCount, post.commentsCount, post.sharesCount, post.content, post.visibility]);
+
+  // Fechar menu ao clicar fora
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [menuOpen]);
+
+  const isOwner = user?.profile?.id === post.authorId;
 
   const handleLike = async () => {
     if (isLiking) return; // Prevenir múltiplos cliques
@@ -150,6 +187,129 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
     }
   };
 
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditContent(post.content || '');
+    setEditVisibility(post.visibility || 'PUBLIC');
+    setEditMedia([]);
+    setEditPreviews([]);
+    setMenuOpen(false);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditContent(post.content || '');
+    setEditVisibility(post.visibility || 'PUBLIC');
+    setEditMedia([]);
+    setEditPreviews([]);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editContent.trim() && editMedia.length === 0) {
+      alert('Adicione conteúdo ou mídia ao post');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const formData = new FormData();
+      formData.append('content', editContent);
+      formData.append('visibility', editVisibility);
+      editMedia.forEach((file) => {
+        formData.append('media', file);
+      });
+
+      await api.put(`/posts/${post.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      setIsEditing(false);
+      setEditMedia([]);
+      setEditPreviews([]);
+      
+      if (onUpdate) {
+        onUpdate();
+      }
+      
+      // Recarregar dados do post
+      await updatePostData();
+    } catch (error: any) {
+      console.error('Error updating post:', error);
+      alert(error.response?.data?.error?.message || 'Erro ao atualizar post');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm('Tem certeza que deseja deletar este post? Esta ação não pode ser desfeita.')) {
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      await api.delete(`/posts/${post.id}`);
+      
+      if (onUpdate) {
+        onUpdate();
+      }
+    } catch (error: any) {
+      console.error('Error deleting post:', error);
+      alert(error.response?.data?.error?.message || 'Erro ao deletar post');
+    } finally {
+      setIsDeleting(false);
+      setMenuOpen(false);
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+      await api.post(`/posts/${post.id}/share`);
+      setSharesCount(prev => prev + 1);
+      await updatePostData();
+      
+      if (onUpdate) {
+        onUpdate();
+      }
+    } catch (error: any) {
+      console.error('Error sharing post:', error);
+      alert(error.response?.data?.error?.message || 'Erro ao compartilhar post');
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length + editMedia.length > 10) {
+      alert('Máximo de 10 arquivos permitidos');
+      return;
+    }
+
+    const newMedia = [...editMedia, ...files];
+    setEditMedia(newMedia);
+
+    // Criar previews
+    files.forEach((file) => {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setEditPreviews((prev) => [...prev, e.target?.result as string]);
+        };
+        reader.readAsDataURL(file);
+      } else if (file.type.startsWith('video/')) {
+        setEditPreviews((prev) => [...prev, URL.createObjectURL(file)]);
+      }
+    });
+  };
+
+  const removeEditMedia = (index: number) => {
+    const newMedia = editMedia.filter((_, i) => i !== index);
+    const newPreviews = editPreviews.filter((_, i) => i !== index);
+    setEditMedia(newMedia);
+    setEditPreviews(newPreviews);
+  };
+
   const authorName = post.author?.companyName || 
     `${post.author?.firstName || ''} ${post.author?.lastName || ''}`.trim() ||
     post.author?.user?.email ||
@@ -189,15 +349,163 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
               </p>
             </div>
           </Link>
-          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-            <EllipsisHorizontalIcon className="h-5 w-5 text-gray-600" />
-          </button>
+          {isOwner && (
+            <div className="relative" ref={menuRef}>
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Opções"
+              >
+                <EllipsisHorizontalIcon className="h-5 w-5 text-gray-600" />
+              </button>
+              
+              {menuOpen && (
+                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 z-50 overflow-hidden">
+                  <div className="py-1">
+                    <button
+                      onClick={handleEdit}
+                      className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    >
+                      <PencilIcon className="h-4 w-4" />
+                      <span>Editar</span>
+                    </button>
+                    <button
+                      onClick={handleDelete}
+                      disabled={isDeleting}
+                      className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                    >
+                      <TrashIcon className="h-4 w-4" />
+                      <span>{isDeleting ? 'Deletando...' : 'Deletar'}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Content */}
       <div className="p-4">
-        <p className="text-gray-900 whitespace-pre-wrap mb-4">{post.content}</p>
+        {isEditing ? (
+          <div className="space-y-4">
+            <textarea
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"
+              rows={4}
+              placeholder="O que você está pensando?"
+            />
+            
+            {/* Preview de nova mídia */}
+            {editPreviews.length > 0 && (
+              <div className="grid grid-cols-2 gap-3">
+                {editPreviews.map((preview, index) => (
+                  <div key={index} className="relative group rounded-xl overflow-hidden border-2 border-gray-200">
+                    {editMedia[index]?.type.startsWith('image/') ? (
+                      <img
+                        src={preview}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-32 object-cover"
+                      />
+                    ) : (
+                      <video
+                        src={preview}
+                        className="w-full h-32 object-cover"
+                        controls
+                      />
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removeEditMedia(index)}
+                      className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 shadow-lg"
+                    >
+                      <XMarkIcon className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {/* Mídia existente */}
+            {post.media && post.media.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-sm text-gray-600 font-medium">Mídia existente (será mantida):</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {post.media.map((url, index) => {
+                    const getMediaUrl = (path: string) => {
+                      if (path.startsWith('http')) return path;
+                      const apiUrl = typeof window !== 'undefined' 
+                        ? (window as any).__API_URL__ || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+                        : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+                      return `${apiUrl}${path}`;
+                    };
+                    const mediaUrl = getMediaUrl(url);
+                    const isVideo = url.match(/\.(mp4|webm|mov)$/i) || post.mediaType === 'video';
+                    return (
+                      <div key={index} className="relative">
+                        {isVideo ? (
+                          <video src={mediaUrl} className="w-full h-24 object-cover rounded-lg" controls />
+                        ) : (
+                          <img src={mediaUrl} alt={`Media ${index + 1}`} className="w-full h-24 object-cover rounded-lg" />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 transition-all border border-gray-200"
+                >
+                  <PhotoIcon className="h-4 w-4" />
+                  <span>Adicionar</span>
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept="image/*,video/*"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+                <select
+                  value={editVisibility}
+                  onChange={(e) => setEditVisibility(e.target.value as any)}
+                  className="text-sm border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                >
+                  <option value="PUBLIC">Público</option>
+                  <option value="FOLLOWERS">Seguidores</option>
+                  <option value="PRIVATE">Privado</option>
+                </select>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveEdit}
+                  disabled={isSaving || (!editContent.trim() && editMedia.length === 0)}
+                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold"
+                >
+                  {isSaving ? 'Salvando...' : 'Salvar'}
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="text-gray-900 whitespace-pre-wrap mb-4">{post.content}</p>
+        )}
 
         {/* Media */}
         {post.media && post.media.length > 0 && (
@@ -263,7 +571,10 @@ export const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
             <ChatBubbleLeftIcon className="h-6 w-6" />
             <span className="text-sm font-medium">{commentsCount}</span>
           </button>
-          <button className="flex items-center space-x-2 text-gray-600 hover:text-primary-600 transition-colors">
+          <button
+            onClick={handleShare}
+            className="flex items-center space-x-2 text-gray-600 hover:text-primary-600 transition-colors"
+          >
             <ShareIcon className="h-6 w-6" />
             <span className="text-sm font-medium">{sharesCount}</span>
           </button>
