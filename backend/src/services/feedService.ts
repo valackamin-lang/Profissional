@@ -1,15 +1,18 @@
 import Job from '../models/Job';
 import Event from '../models/Event';
 import Mentorship from '../models/Mentorship';
+import Post from '../models/Post';
 import { serializeEvent, serializeMentorship } from '../utils/serializeHelpers';
 import FeedItem from '../models/FeedItem';
 import Profile from '../models/Profile';
+import User from '../models/User';
 import redis from '../config/redis';
 import { Op } from 'sequelize';
+import { getCachedPost, getCachedUserLikes } from './postCacheService';
 
 export interface FeedItemData {
   id: string;
-  type: 'JOB' | 'EVENT' | 'MENTORSHIP';
+  type: 'JOB' | 'EVENT' | 'MENTORSHIP' | 'POST';
   content: any;
   priority: number;
   createdAt: Date;
@@ -34,6 +37,12 @@ const calculatePriority = (item: any, userProfile?: Profile | null): number => {
   }
   if (item.type === 'MENTORSHIP' && item.status === 'ACTIVE') {
     priority += 5;
+  }
+  if (item.type === 'POST') {
+    priority += 3; // Posts têm prioridade base menor
+    // Boost por interação
+    if (item.likesCount) priority += Math.min(item.likesCount / 10, 5);
+    if (item.commentsCount) priority += Math.min(item.commentsCount / 5, 3);
   }
 
   // User profile matching (if user profile exists)
@@ -117,6 +126,42 @@ export const generateFeed = async (userId?: string, page: number = 1, limit: num
     ],
   });
 
+  // Buscar posts com cache
+  const postFeedItems = feedItems.filter((fi) => fi.type === 'POST');
+  const postIds = postFeedItems.map((fi) => fi.itemId);
+  
+  // Tentar buscar posts do cache primeiro
+  const posts: (Post | any)[] = [];
+  const uncachedPostIds: string[] = [];
+  
+  for (const postId of postIds) {
+    const cachedPost = await getCachedPost(postId, userId);
+    if (cachedPost) {
+      // Post do cache já é um objeto simples
+      posts.push(cachedPost);
+    } else {
+      uncachedPostIds.push(postId);
+    }
+  }
+  
+  // Buscar posts não cacheados do banco
+  if (uncachedPostIds.length > 0) {
+    const dbPosts = await Post.findAll({
+      where: {
+        id: { [Op.in]: uncachedPostIds },
+        visibility: 'PUBLIC',
+      },
+      include: [
+        {
+          model: Profile,
+          as: 'author',
+          include: [{ model: User, as: 'user', attributes: ['id', 'email'] }],
+        },
+      ],
+    });
+    posts.push(...dbPosts);
+  }
+
   // Combine and rank items
   const feedData: FeedItemData[] = [];
 
@@ -161,6 +206,35 @@ export const generateFeed = async (userId?: string, page: number = 1, limit: num
     }
   }
 
+  // Obter likes do usuário para todos os posts de uma vez (com cache)
+  const allPostIds = posts.map(p => {
+    // Posts do cache são objetos simples, posts do banco são instâncias
+    return typeof p.toJSON === 'function' ? p.id : (p as any).id;
+  });
+  const userLikedPosts = userId ? await getCachedUserLikes(userId, allPostIds) : new Set<string>();
+
+  for (const post of posts) {
+    const feedItem = feedItems.find((fi) => fi.type === 'POST' && fi.itemId === post.id);
+    if (feedItem) {
+      // Converter post para objeto simples
+      const postData = typeof post.toJSON === 'function' ? post.toJSON() : (post as any);
+      const postId = postData.id || (post as any).id;
+      const postCreatedAt = postData.createdAt || (post as any).createdAt;
+      
+      const postWithLike = {
+        ...postData,
+        isLiked: userLikedPosts.has(postId),
+      };
+      feedData.push({
+        id: postId,
+        type: 'POST',
+        content: postWithLike,
+        priority: calculatePriority({ ...feedItem.toJSON(), type: 'POST', ...postData }, userProfile),
+        createdAt: postCreatedAt,
+      });
+    }
+  }
+
   // Sort by priority
   feedData.sort((a, b) => b.priority - a.priority);
 
@@ -175,7 +249,7 @@ export const generateFeed = async (userId?: string, page: number = 1, limit: num
   return paginatedFeed;
 };
 
-export const addToFeed = async (type: 'JOB' | 'EVENT' | 'MENTORSHIP', itemId: string, priority: number = 0, targetAudience?: string[]): Promise<void> => {
+export const addToFeed = async (type: 'JOB' | 'EVENT' | 'MENTORSHIP' | 'POST', itemId: string, priority: number = 0, targetAudience?: string[]): Promise<void> => {
   await FeedItem.create({
     type,
     itemId,

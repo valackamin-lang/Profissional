@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ProtectedRoute } from '../../../components/ProtectedRoute';
 import { Header } from '../../../components/Header';
+import { useAuth } from '../../../contexts/AuthContext';
 import api from '../../../lib/api';
 import {
   UserIcon,
@@ -17,6 +18,7 @@ import {
   CurrencyDollarIcon,
   ChartBarIcon,
   ClockIcon,
+  ChatBubbleLeftIcon,
 } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 
@@ -66,11 +68,13 @@ interface Mentorship {
 export default function ProfileViewPage() {
   const params = useParams();
   const router = useRouter();
+  const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [stats, setStats] = useState<MentorStats | null>(null);
   const [mentorships, setMentorships] = useState<Mentorship[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [startingChat, setStartingChat] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -155,6 +159,31 @@ export default function ProfileViewPage() {
     return stars[ranking as keyof typeof stars] || 2;
   };
 
+  const handleStartChat = async () => {
+    if (!user || !profile) return;
+    
+    // Verificar se não é o próprio perfil
+    if (user.profile?.id === profile.id) {
+      return;
+    }
+
+    try {
+      setStartingChat(true);
+      const response = await api.get(`/chat/with/${profile.id}`);
+      const chat = response.data.data.chat;
+      
+      // Redirecionar para o chat com o chat selecionado
+      router.push(`/chat?chatId=${chat.id}`);
+    } catch (error: any) {
+      console.error('Error starting chat:', error);
+      alert(error.response?.data?.error?.message || 'Erro ao iniciar conversa');
+    } finally {
+      setStartingChat(false);
+    }
+  };
+
+  const isOwnProfile = user?.profile?.id === profile?.id;
+
   if (loading) {
     return (
       <ProtectedRoute>
@@ -225,9 +254,21 @@ export default function ProfileViewPage() {
                       </div>
                     )}
                     <div className="flex-1 text-white text-center sm:text-left">
-                      <h1 className="text-4xl font-bold mb-2">
-                        {profile.companyName || `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || 'Sem nome'}
-                      </h1>
+                      <div className="flex items-center justify-between">
+                        <h1 className="text-4xl font-bold mb-2">
+                          {profile.companyName || `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || 'Sem nome'}
+                        </h1>
+                        {user && !isOwnProfile && (
+                          <button
+                            onClick={handleStartChat}
+                            disabled={startingChat}
+                            className="ml-4 inline-flex items-center px-4 py-2 bg-white text-primary-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                          >
+                            <ChatBubbleLeftIcon className="h-5 w-5 mr-2" />
+                            {startingChat ? 'Iniciando...' : 'Iniciar Conversa'}
+                          </button>
+                        )}
+                      </div>
                       <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-3">
                         <span className="inline-flex items-center px-4 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold border border-white/30">
                           {getProfileTypeLabel(profile.type)}

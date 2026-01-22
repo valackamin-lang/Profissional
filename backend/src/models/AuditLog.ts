@@ -3,7 +3,7 @@ import sequelize from '../config/database';
 import User from './User';
 
 export type AuditAction = 'CREATE' | 'UPDATE' | 'DELETE' | 'APPROVE' | 'REJECT' | 'LOGIN' | 'LOGOUT' | 'ACTIVATE' | 'DEACTIVATE';
-export type AuditResource = 'USER' | 'PROFILE' | 'JOB' | 'EVENT' | 'MENTORSHIP' | 'PAYMENT' | 'SUBSCRIPTION' | 'ROLE' | 'PERMISSION' | 'MENTORSHIP_SUBSCRIPTION';
+export type AuditResource = 'USER' | 'PROFILE' | 'JOB' | 'EVENT' | 'MENTORSHIP' | 'PAYMENT' | 'SUBSCRIPTION' | 'ROLE' | 'PERMISSION' | 'MENTORSHIP_SUBSCRIPTION' | 'POST';
 
 export interface AuditLogAttributes {
   id: string;
@@ -53,7 +53,7 @@ AuditLog.init(
       allowNull: false,
     },
     resource: {
-      type: DataTypes.ENUM('USER', 'PROFILE', 'JOB', 'EVENT', 'MENTORSHIP', 'PAYMENT', 'SUBSCRIPTION', 'ROLE', 'PERMISSION', 'MENTORSHIP_SUBSCRIPTION'),
+      type: DataTypes.ENUM('USER', 'PROFILE', 'JOB', 'EVENT', 'MENTORSHIP', 'PAYMENT', 'SUBSCRIPTION', 'ROLE', 'PERMISSION', 'MENTORSHIP_SUBSCRIPTION', 'POST'),
       allowNull: false,
     },
     resourceId: {

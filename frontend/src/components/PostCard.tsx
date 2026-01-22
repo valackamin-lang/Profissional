@@ -1,0 +1,349 @@
+'use client';
+
+import { useState, useEffect, useRef, useCallback } from 'react';
+import Link from 'next/link';
+import api from '../lib/api';
+import { Post, PostComment } from '../types';
+import {
+  HeartIcon,
+  ChatBubbleLeftIcon,
+  ShareIcon,
+  EllipsisHorizontalIcon,
+} from '@heroicons/react/24/outline';
+import {
+  HeartIcon as HeartIconSolid,
+} from '@heroicons/react/24/solid';
+
+interface PostCardProps {
+  post: Post;
+  onUpdate?: () => void;
+}
+
+export const PostCard: React.FC<PostCardProps> = ({ post, onUpdate }) => {
+  const [isLiked, setIsLiked] = useState(post.isLiked || false);
+  const [likesCount, setLikesCount] = useState(post.likesCount);
+  const [commentsCount, setCommentsCount] = useState(post.commentsCount);
+  const [sharesCount, setSharesCount] = useState(post.sharesCount);
+  const [showComments, setShowComments] = useState(false);
+  const [comments, setComments] = useState<PostComment[]>([]);
+  const [loadingComments, setLoadingComments] = useState(false);
+  const [commentText, setCommentText] = useState('');
+  const [postingComment, setPostingComment] = useState(false);
+  const [isLiking, setIsLiking] = useState(false);
+  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Atualizar dados do post periodicamente
+  const updatePostData = useCallback(async () => {
+    try {
+      const response = await api.get(`/posts/${post.id}`);
+      const updatedPost = response.data.data.post;
+      setIsLiked(updatedPost.isLiked || false);
+      setLikesCount(updatedPost.likesCount);
+      setCommentsCount(updatedPost.commentsCount);
+      setSharesCount(updatedPost.sharesCount);
+    } catch (error) {
+      console.error('Error updating post data:', error);
+    }
+  }, [post.id]);
+
+  // Polling para atualização em tempo real
+  useEffect(() => {
+    // Atualizar a cada 10 segundos se o post estiver visível
+    pollIntervalRef.current = setInterval(() => {
+      updatePostData();
+    }, 10000);
+
+    return () => {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+      }
+    };
+  }, [updatePostData]);
+
+  // Sincronizar estado inicial quando post prop mudar
+  useEffect(() => {
+    setIsLiked(post.isLiked || false);
+    setLikesCount(post.likesCount);
+    setCommentsCount(post.commentsCount);
+    setSharesCount(post.sharesCount);
+  }, [post.isLiked, post.likesCount, post.commentsCount, post.sharesCount]);
+
+  const handleLike = async () => {
+    if (isLiking) return; // Prevenir múltiplos cliques
+    
+    setIsLiking(true);
+    const previousLiked = isLiked;
+    const previousCount = likesCount;
+    
+    // Otimistic update
+    setIsLiked(!previousLiked);
+    setLikesCount(previousLiked ? previousCount - 1 : previousCount + 1);
+    
+    try {
+      const response = await api.post(`/posts/${post.id}/like`);
+      setIsLiked(response.data.data.liked);
+      setLikesCount(response.data.data.likesCount);
+      
+      // Atualizar outros dados também
+      await updatePostData();
+      
+      if (onUpdate) {
+        onUpdate();
+      }
+    } catch (error) {
+      // Reverter em caso de erro
+      setIsLiked(previousLiked);
+      setLikesCount(previousCount);
+      console.error('Error liking post:', error);
+    } finally {
+      setIsLiking(false);
+    }
+  };
+
+  const loadComments = async () => {
+    if (comments.length > 0) {
+      setShowComments(!showComments);
+      return;
+    }
+
+    setLoadingComments(true);
+    try {
+      const response = await api.get(`/posts/${post.id}/comments`);
+      setComments(response.data.data.comments);
+      setShowComments(true);
+    } catch (error) {
+      console.error('Error loading comments:', error);
+    } finally {
+      setLoadingComments(false);
+    }
+  };
+
+  const handleComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!commentText.trim()) return;
+
+    setPostingComment(true);
+    try {
+      const response = await api.post(`/posts/${post.id}/comments`, {
+        content: commentText,
+      });
+      setComments([response.data.data.comment, ...comments]);
+      setCommentText('');
+      
+      // Atualizar contador de comentários
+      if (response.data.data.commentsCount !== undefined) {
+        setCommentsCount(response.data.data.commentsCount);
+      } else {
+        setCommentsCount(prev => prev + 1);
+      }
+      
+      // Atualizar dados do post
+      await updatePostData();
+      
+      if (onUpdate) {
+        onUpdate();
+      }
+    } catch (error) {
+      console.error('Error posting comment:', error);
+    } finally {
+      setPostingComment(false);
+    }
+  };
+
+  const authorName = post.author?.companyName || 
+    `${post.author?.firstName || ''} ${post.author?.lastName || ''}`.trim() ||
+    post.author?.user?.email ||
+    'Usuário';
+
+  const authorAvatar = post.author?.avatar || post.author?.companyLogo;
+
+  return (
+    <article className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      {/* Header */}
+      <div className="p-4 border-b border-gray-100">
+        <div className="flex items-center justify-between">
+          <Link href={`/profiles/${post.authorId}`} className="flex items-center space-x-3">
+            {authorAvatar ? (
+              <img
+                src={authorAvatar}
+                alt={authorName}
+                className="h-10 w-10 rounded-full object-cover"
+              />
+            ) : (
+              <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center">
+                <span className="text-primary-600 font-semibold">
+                  {authorName[0].toUpperCase()}
+                </span>
+              </div>
+            )}
+            <div>
+              <p className="font-semibold text-gray-900">{authorName}</p>
+              <p className="text-xs text-gray-500">
+                {new Date(post.createdAt).toLocaleDateString('pt-AO', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </p>
+            </div>
+          </Link>
+          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <EllipsisHorizontalIcon className="h-5 w-5 text-gray-600" />
+          </button>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-4">
+        <p className="text-gray-900 whitespace-pre-wrap mb-4">{post.content}</p>
+
+        {/* Media */}
+        {post.media && post.media.length > 0 && (
+          <div className={`mb-4 ${
+            post.media.length === 1 ? '' : 'grid grid-cols-2 gap-2'
+          }`}>
+            {post.media.map((url, index) => {
+              // Construir URL completa se for relativa
+              const getMediaUrl = (path: string) => {
+                if (path.startsWith('http')) return path;
+                const apiUrl = typeof window !== 'undefined' 
+                  ? (window as any).__API_URL__ || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+                  : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+                return `${apiUrl}${path}`;
+              };
+              const mediaUrl = getMediaUrl(url);
+              const isVideo = url.match(/\.(mp4|webm|mov)$/i) || post.mediaType === 'video';
+              return (
+                <div key={index} className="relative">
+                  {isVideo ? (
+                    <video
+                      src={mediaUrl}
+                      controls
+                      className="w-full h-auto rounded-lg"
+                    />
+                  ) : (
+                    <img
+                      src={mediaUrl}
+                      alt={`Post media ${index + 1}`}
+                      className="w-full h-auto rounded-lg object-cover"
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Actions */}
+        <div className="flex items-center space-x-6 pt-4 border-t border-gray-100">
+          <button
+            onClick={handleLike}
+            disabled={isLiking}
+            className={`flex items-center space-x-2 transition-colors ${
+              isLiking 
+                ? 'opacity-50 cursor-not-allowed' 
+                : isLiked 
+                  ? 'text-red-600 hover:text-red-700' 
+                  : 'text-gray-600 hover:text-red-600'
+            }`}
+          >
+            {isLiked ? (
+              <HeartIconSolid className="h-6 w-6 text-red-600" />
+            ) : (
+              <HeartIcon className="h-6 w-6" />
+            )}
+            <span className="text-sm font-medium">{likesCount}</span>
+          </button>
+          <button
+            onClick={loadComments}
+            className="flex items-center space-x-2 text-gray-600 hover:text-primary-600 transition-colors"
+          >
+            <ChatBubbleLeftIcon className="h-6 w-6" />
+            <span className="text-sm font-medium">{commentsCount}</span>
+          </button>
+          <button className="flex items-center space-x-2 text-gray-600 hover:text-primary-600 transition-colors">
+            <ShareIcon className="h-6 w-6" />
+            <span className="text-sm font-medium">{sharesCount}</span>
+          </button>
+        </div>
+
+        {/* Comments Section */}
+        {showComments && (
+          <div className="mt-4 pt-4 border-t border-gray-100">
+            <form onSubmit={handleComment} className="mb-4">
+              <div className="flex space-x-2">
+                <input
+                  type="text"
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  placeholder="Escreva um comentário..."
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                />
+                <button
+                  type="submit"
+                  disabled={postingComment || !commentText.trim()}
+                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {postingComment ? '...' : 'Comentar'}
+                </button>
+              </div>
+            </form>
+
+            {loadingComments ? (
+              <div className="flex justify-center py-4">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600"></div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {comments.map((comment) => (
+                  <div key={comment.id} className="flex space-x-3">
+                    <div className="flex-shrink-0">
+                      {comment.author?.avatar ? (
+                        <img
+                          src={comment.author.avatar}
+                          alt="Avatar"
+                          className="h-8 w-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center">
+                          <span className="text-primary-600 text-xs font-semibold">
+                            {comment.author?.firstName?.[0] || 'U'}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm">
+                        <span className="font-semibold text-gray-900">
+                          {comment.author?.companyName ||
+                            `${comment.author?.firstName || ''} ${comment.author?.lastName || ''}`.trim() ||
+                            'Usuário'}
+                        </span>
+                        <span className="text-gray-700 ml-2">{comment.content}</span>
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {new Date(comment.createdAt).toLocaleDateString('pt-AO', {
+                          day: 'numeric',
+                          month: 'short',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+                {comments.length === 0 && (
+                  <p className="text-center text-gray-500 text-sm py-4">
+                    Nenhum comentário ainda. Seja o primeiro!
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </article>
+  );
+};

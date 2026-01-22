@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import api from '../lib/api';
-import { FeedItem, Job, Event, Mentorship } from '../types';
+import { FeedItem, Job, Event, Mentorship, Post } from '../types';
+import { PostCard } from './PostCard';
+import { CreatePost } from './CreatePost';
 import {
   BriefcaseIcon,
   CalendarIcon,
@@ -67,11 +69,28 @@ export const Feed: React.FC = () => {
     );
   }
 
+  const handlePostCreated = () => {
+    // Recarregar feed
+    setFeed([]);
+    setPage(1);
+    setHasMore(true);
+    loadFeed();
+  };
+
+  const handlePostUpdate = () => {
+    // Atualizar feed sem recarregar tudo
+    loadFeed();
+  };
+
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      {feed.map((item) => (
-        <FeedCard key={item.id} item={item} />
-      ))}
+      <CreatePost onPostCreated={handlePostCreated} />
+      {feed.map((item) => {
+        if (item.type === 'POST') {
+          return <PostCard key={item.id} post={item.content as Post} onUpdate={handlePostUpdate} />;
+        }
+        return <FeedCard key={item.id} item={item} />;
+      })}
       {loading && feed.length > 0 && (
         <div className="flex items-center justify-center p-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>

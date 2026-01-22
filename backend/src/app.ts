@@ -1,15 +1,22 @@
 import express, { Application } from 'express';
+import { createServer } from 'http';
 import dotenv from 'dotenv';
 import { connectDatabase } from './config/database';
 import { syncDatabase } from './config/syncDatabase';
 import redis from './config/redis';
 import logger from './config/logger';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
+import { initializeSocket, setIO } from './config/socket';
 
 dotenv.config();
 
 const app: Application = express();
+const httpServer = createServer(app);
 const PORT = process.env.PORT || 3001;
+
+// Inicializar Socket.io
+const io = initializeSocket(httpServer);
+setIO(io);
 
 // Middleware
 app.use(express.json({ limit: '10mb' }));
@@ -83,6 +90,8 @@ import jobRoutes from './routes/jobRoutes';
 import eventRoutes from './routes/eventRoutes';
 import mentorshipRoutes from './routes/mentorshipRoutes';
 import feedRoutes from './routes/feedRoutes';
+import postRoutes from './routes/postRoutes';
+import chatRoutes from './routes/chatRoutes';
 import notificationRoutes from './routes/notificationRoutes';
 import stripeRoutes from './routes/stripeRoutes';
 import commissionRoutes from './routes/commissionRoutes';
@@ -106,6 +115,8 @@ app.use('/api/jobs', jobRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/mentorships', mentorshipRoutes);
 app.use('/api/feed', feedRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/chat', chatRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/stripe', stripeRoutes);
 app.use('/api/gpo', gpoRoutes);
@@ -157,10 +168,11 @@ const startServer = async (): Promise<void> => {
       logger.warn('   Make sure Redis is running: docker-compose up -d');
     }
     
-    app.listen(PORT, () => {
+    httpServer.listen(PORT, () => {
       logger.info(`🚀 Server running on port ${PORT}`);
       logger.info(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
       logger.info(`🌐 API available at http://localhost:${PORT}`);
+      logger.info(`💬 Socket.io initialized`);
     });
   } catch (error) {
     logger.error('Failed to start server:', error);

@@ -1,6 +1,7 @@
 import { seedRolesAndPermissions } from './01-roles-permissions';
 import { seedAdminUser } from './02-admin-user';
 import { seedSampleData } from './03-sample-data';
+import { seedSamplePosts } from './04-sample-posts';
 import logger from '../config/logger';
 
 export const runSeeders = async (): Promise<void> => {
@@ -12,6 +13,7 @@ export const runSeeders = async (): Promise<void> => {
     await seedRolesAndPermissions();
     await seedAdminUser();
     await seedSampleData();
+    await seedSamplePosts();
 
     logger.info('');
     logger.info('✅ All seeders completed successfully!');
@@ -21,4 +23,4 @@ export const runSeeders = async (): Promise<void> => {
   }
 };
 
-export { seedRolesAndPermissions, seedAdminUser, seedSampleData };
+export { seedRolesAndPermissions, seedAdminUser, seedSampleData, seedSamplePosts };

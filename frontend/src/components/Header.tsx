@@ -5,12 +5,13 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import api from '../lib/api';
-import { BellIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { BellIcon, ArrowRightOnRectangleIcon, ChatBubbleLeftIcon } from '@heroicons/react/24/outline';
 
 export const Header: React.FC = () => {
   const { user, logout } = useAuth();
   const router = useRouter();
   const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadChatsCount, setUnreadChatsCount] = useState(0);
 
   const handleLogout = () => {
     logout();
@@ -20,8 +21,12 @@ export const Header: React.FC = () => {
   useEffect(() => {
     if (user) {
       loadUnreadCount();
-      // Atualizar contador a cada 30 segundos
-      const interval = setInterval(loadUnreadCount, 30000);
+      loadUnreadChatsCount();
+      // Atualizar contadores a cada 30 segundos
+      const interval = setInterval(() => {
+        loadUnreadCount();
+        loadUnreadChatsCount();
+      }, 30000);
       return () => clearInterval(interval);
     }
   }, [user]);
@@ -32,6 +37,19 @@ export const Header: React.FC = () => {
       const notifications = response.data.data.notifications || [];
       const unread = notifications.filter((n: any) => !n.read).length;
       setUnreadCount(unread);
+    } catch (error) {
+      // Silenciosamente falhar
+    }
+  };
+
+  const loadUnreadChatsCount = async () => {
+    try {
+      const response = await api.get('/chat');
+      const chats = response.data.data.chats || [];
+      const totalUnread = chats.reduce((sum: number, chat: any) => {
+        return sum + (chat.unreadCount || 0);
+      }, 0);
+      setUnreadChatsCount(totalUnread);
     } catch (error) {
       // Silenciosamente falhar
     }
@@ -148,8 +166,21 @@ export const Header: React.FC = () => {
           </div>
           <div className="flex items-center space-x-4">
             <Link
+              href="/chat"
+              className="relative p-2 rounded-md text-gray-700 hover:text-primary-600 hover:bg-gray-100 transition-colors"
+              title="Mensagens"
+            >
+              <ChatBubbleLeftIcon className="h-6 w-6" />
+              {unreadChatsCount > 0 && (
+                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-primary-600 rounded-full min-w-[1.25rem]">
+                  {unreadChatsCount > 9 ? '9+' : unreadChatsCount}
+                </span>
+              )}
+            </Link>
+            <Link
               href="/notifications"
               className="relative p-2 rounded-md text-gray-700 hover:text-primary-600 hover:bg-gray-100 transition-colors"
+              title="Notificações"
             >
               <BellIcon className="h-6 w-6" />
               {unreadCount > 0 && (

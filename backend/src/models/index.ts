@@ -14,6 +14,12 @@ import Payment from './Payment';
 import AuditLog from './AuditLog';
 import Notification from './Notification';
 import FeedItem from './FeedItem';
+import Post from './Post';
+import PostLike from './PostLike';
+import PostComment from './PostComment';
+import PostShare from './PostShare';
+import Chat from './Chat';
+import Message from './Message';
 
 // User - Role relationship
 User.belongsTo(Role, { foreignKey: 'roleId', as: 'role' });
@@ -91,6 +97,46 @@ AuditLog.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 User.hasMany(Notification, { foreignKey: 'userId', as: 'notifications' });
 Notification.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
+// Profile - Post relationship
+Profile.hasMany(Post, { foreignKey: 'authorId', as: 'posts' });
+Post.belongsTo(Profile, { foreignKey: 'authorId', as: 'author' });
+
+// Post - PostLike relationship
+Post.hasMany(PostLike, { foreignKey: 'postId', as: 'likes' });
+PostLike.belongsTo(Post, { foreignKey: 'postId', as: 'post' });
+Profile.hasMany(PostLike, { foreignKey: 'userId', as: 'postLikes' });
+PostLike.belongsTo(Profile, { foreignKey: 'userId', as: 'user' });
+
+// Post - PostComment relationship
+Post.hasMany(PostComment, { foreignKey: 'postId', as: 'comments' });
+PostComment.belongsTo(Post, { foreignKey: 'postId', as: 'post' });
+Profile.hasMany(PostComment, { foreignKey: 'authorId', as: 'postComments' });
+PostComment.belongsTo(Profile, { foreignKey: 'authorId', as: 'author' });
+PostComment.belongsTo(PostComment, { foreignKey: 'parentId', as: 'parent' });
+PostComment.hasMany(PostComment, { foreignKey: 'parentId', as: 'replies' });
+
+// Post - PostShare relationship
+Post.hasMany(PostShare, { foreignKey: 'postId', as: 'shares' });
+PostShare.belongsTo(Post, { foreignKey: 'postId', as: 'post' });
+Profile.hasMany(PostShare, { foreignKey: 'userId', as: 'postShares' });
+PostShare.belongsTo(Profile, { foreignKey: 'userId', as: 'user' });
+
+// Profile - Chat relationship (participant1)
+Profile.hasMany(Chat, { foreignKey: 'participant1Id', as: 'chatsAsParticipant1' });
+Chat.belongsTo(Profile, { foreignKey: 'participant1Id', as: 'participant1' });
+
+// Profile - Chat relationship (participant2)
+Profile.hasMany(Chat, { foreignKey: 'participant2Id', as: 'chatsAsParticipant2' });
+Chat.belongsTo(Profile, { foreignKey: 'participant2Id', as: 'participant2' });
+
+// Chat - Message relationship
+Chat.hasMany(Message, { foreignKey: 'chatId', as: 'messages' });
+Message.belongsTo(Chat, { foreignKey: 'chatId', as: 'chat' });
+
+// Profile - Message relationship
+Profile.hasMany(Message, { foreignKey: 'senderId', as: 'sentMessages' });
+Message.belongsTo(Profile, { foreignKey: 'senderId', as: 'sender' });
+
 export {
   User,
   Role,
@@ -108,4 +154,10 @@ export {
   AuditLog,
   Notification,
   FeedItem,
+  Post,
+  PostLike,
+  PostComment,
+  PostShare,
+  Chat,
+  Message,
 };

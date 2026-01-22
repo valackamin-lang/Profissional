@@ -17,6 +17,8 @@ const ensureDirectories = () => {
     path.join(uploadDir, 'portfolios'),
     path.join(uploadDir, 'documents'),
     path.join(uploadDir, 'logos'),
+    path.join(uploadDir, 'posts'),
+    path.join(uploadDir, 'chat'),
   ];
 
   dirs.forEach((dir) => {
@@ -42,6 +44,10 @@ const storage = multer.diskStorage({
       uploadPath = path.join(uploadDir, 'documents');
     } else if (file.fieldname === 'logo') {
       uploadPath = path.join(uploadDir, 'logos');
+    } else if (file.fieldname === 'media' || file.fieldname === 'postMedia') {
+      uploadPath = path.join(uploadDir, 'posts');
+    } else if (file.fieldname === 'chatMedia') {
+      uploadPath = path.join(uploadDir, 'chat');
     }
 
     cb(null, uploadPath);
@@ -59,6 +65,9 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCa
     portfolio: ['application/pdf', 'application/zip', 'application/x-zip-compressed', 'application/vnd.rar'],
     document: ['application/pdf', 'image/jpeg', 'image/png'],
     logo: ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'],
+    media: ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'video/mp4', 'video/webm', 'video/quicktime'],
+    postMedia: ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'video/mp4', 'video/webm', 'video/quicktime'],
+    chatMedia: ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'video/mp4', 'video/webm', 'video/quicktime', 'application/pdf', 'application/msword'],
   };
 
   const allowedTypes = allowedMimes[file.fieldname] || allowedMimes.document;
@@ -84,4 +93,10 @@ export const uploadFields = upload.fields([
   { name: 'portfolio', maxCount: 1 },
   { name: 'document', maxCount: 5 },
   { name: 'logo', maxCount: 1 },
+  { name: 'media', maxCount: 10 },
+  { name: 'postMedia', maxCount: 10 },
+]);
+
+export const uploadPostMedia = upload.fields([
+  { name: 'media', maxCount: 10 },
 ]);

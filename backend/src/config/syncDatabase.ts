@@ -17,6 +17,12 @@ import {
   AuditLog,
   Notification,
   FeedItem,
+  Post,
+  PostLike,
+  PostComment,
+  PostShare,
+  Chat,
+  Message,
 } from '../models';
 // Removed seed import - seeders are now in separate files
 
@@ -41,6 +47,17 @@ export const syncDatabase = async (force: boolean = false): Promise<void> => {
     await AuditLog.sync({ force });
     await Notification.sync({ force });
     await FeedItem.sync({ force });
+    logger.info('📝 Syncing Post models...');
+    await Post.sync({ force });
+    await PostLike.sync({ force });
+    await PostComment.sync({ force });
+    await PostShare.sync({ force });
+    logger.info('✅ Post models synced');
+    
+    logger.info('💬 Syncing Chat models...');
+    await Chat.sync({ force });
+    await Message.sync({ force });
+    logger.info('✅ Chat models synced');
 
     logger.info('✅ Database synced successfully.');
   } catch (error) {

@@ -80,12 +80,74 @@ export interface Mentorship {
 
 export type MentorshipStatus = 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
 
+export interface Post {
+  id: string;
+  authorId: string;
+  content: string;
+  media?: string[];
+  mediaType?: 'image' | 'video' | 'mixed';
+  visibility: 'PUBLIC' | 'FOLLOWERS' | 'PRIVATE';
+  likesCount: number;
+  commentsCount: number;
+  sharesCount: number;
+  isLiked?: boolean;
+  author?: Profile & { user?: { id: string; email: string } };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PostComment {
+  id: string;
+  postId: string;
+  authorId: string;
+  content: string;
+  parentId?: string;
+  likesCount: number;
+  author?: Profile & { user?: { id: string; email: string } };
+  replies?: PostComment[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface FeedItem {
   id: string;
   type: FeedItemType;
-  content: Job | Event | Mentorship;
+  content: Job | Event | Mentorship | Post;
   priority: number;
   createdAt: string;
 }
 
-export type FeedItemType = 'JOB' | 'EVENT' | 'MENTORSHIP';
+export type FeedItemType = 'JOB' | 'EVENT' | 'MENTORSHIP' | 'POST';
+
+export type MessageType = 'text' | 'image' | 'file' | 'system';
+
+export interface Message {
+  id: string;
+  chatId: string;
+  senderId: string;
+  content: string;
+  type: MessageType;
+  readAt?: string;
+  mediaUrl?: string;
+  fileName?: string;
+  fileSize?: number;
+  createdAt: string;
+  updatedAt: string;
+  sender?: Profile & { user?: { id: string; email: string } };
+}
+
+export interface Chat {
+  id: string;
+  participant1Id: string;
+  participant2Id: string;
+  lastMessageAt?: string;
+  lastMessage?: string;
+  unreadCount1: number;
+  unreadCount2: number;
+  createdAt: string;
+  updatedAt: string;
+  participant1?: Profile & { user?: { id: string; email: string } };
+  participant2?: Profile & { user?: { id: string; email: string } };
+  otherParticipant?: Profile & { user?: { id: string; email: string } };
+  unreadCount?: number;
+}

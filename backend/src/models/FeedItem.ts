@@ -1,7 +1,7 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
-export type FeedItemType = 'JOB' | 'EVENT' | 'MENTORSHIP';
+export type FeedItemType = 'JOB' | 'EVENT' | 'MENTORSHIP' | 'POST';
 
 export interface FeedItemAttributes {
   id: string;
@@ -35,7 +35,7 @@ FeedItem.init(
       primaryKey: true,
     },
     type: {
-      type: DataTypes.ENUM('JOB', 'EVENT', 'MENTORSHIP'),
+      type: DataTypes.ENUM('JOB', 'EVENT', 'MENTORSHIP', 'POST'),
       allowNull: false,
     },
     itemId: {
