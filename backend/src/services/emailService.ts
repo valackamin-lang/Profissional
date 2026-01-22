@@ -38,6 +38,16 @@ const getEmailTransporter = () => {
     tls: {
       rejectUnauthorized: false, // Aceitar certificados auto-assinados (apenas desenvolvimento)
     },
+    // Configurações de timeout para produção
+    connectionTimeout: 60000, // 60 segundos para estabelecer conexão
+    socketTimeout: 60000, // 60 segundos para operações de socket
+    greetingTimeout: 30000, // 30 segundos para greeting do servidor
+    // Retry logic
+    pool: true, // Usar connection pooling
+    maxConnections: 5, // Máximo de conexões simultâneas
+    maxMessages: 100, // Máximo de mensagens por conexão
+    rateDelta: 1000, // Intervalo entre tentativas (ms)
+    rateLimit: 14, // Limite de mensagens por rateDelta
   });
 };
 
@@ -133,7 +143,8 @@ FORGETECH Professional
     }
 
     try {
-      await transporter.sendMail({
+      // Timeout adicional para o envio do email (60 segundos)
+      const sendEmailPromise = transporter.sendMail({
         from: `"FORGETECH Professional" <${process.env.SMTP_USER}>`,
         to: user.email,
         subject: 'Verifique seu email - FORGETECH Professional',
@@ -141,25 +152,39 @@ FORGETECH Professional
         text: emailText,
       });
 
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Timeout ao enviar email')), 60000);
+      });
+
+      await Promise.race([sendEmailPromise, timeoutPromise]);
+
       logger.info(`✅ Email de verificação enviado para ${user.email}`);
     } catch (smtpError: any) {
       // Tratamento específico de erros SMTP
       let errorMessage = `Erro ao enviar email de verificação para ${user.email}`;
       
-      if (smtpError.code === 'EAUTH') {
+      if (smtpError.message === 'Timeout ao enviar email' || smtpError.code === 'ETIMEDOUT' || smtpError.code === 'ESOCKETTIMEDOUT') {
+        errorMessage = `Timeout ao enviar email: A conexão com o servidor SMTP demorou muito. Verifique se a porta ${process.env.SMTP_PORT} está acessível e se não há firewall bloqueando.`;
+        logger.error(`${errorMessage}\n💡 Dica: Em produção, verifique se a porta SMTP não está bloqueada pelo firewall.`);
+        logger.error(`💡 Dica: Tente usar porta 465 (SSL) ou verifique conectividade de rede.`);
+      } else if (smtpError.code === 'EAUTH') {
         errorMessage = `Erro de autenticação SMTP: ${smtpError.message}`;
         logger.error(`${errorMessage}\n💡 Dica: Verifique se está usando uma "App Password" do Gmail, não a senha normal.`);
         logger.error('📖 Consulte CONFIGURACAO_SMTP.md para instruções detalhadas.');
-      } else if (smtpError.code === 'ECONNECTION') {
+      } else if (smtpError.code === 'ECONNECTION' || smtpError.code === 'ENOTFOUND') {
         errorMessage = `Erro de conexão SMTP: Não foi possível conectar ao servidor ${process.env.SMTP_HOST}`;
         logger.error(`${errorMessage}\n💡 Dica: Verifique SMTP_HOST e SMTP_PORT no arquivo .env`);
+        logger.error(`💡 Dica: Em produção, verifique se o DNS está resolvendo corretamente e se há firewall bloqueando.`);
       } else if (smtpError.responseCode === 535) {
         errorMessage = `Erro de autenticação: Credenciais SMTP inválidas`;
         logger.error(`${errorMessage}\n💡 Dica: Para Gmail, você precisa usar uma "App Password" (senha de aplicativo).`);
         logger.error('📖 Consulte CONFIGURACAO_SMTP.md para instruções detalhadas.');
       } else {
-        errorMessage = `Erro SMTP: ${smtpError.message}`;
+        errorMessage = `Erro SMTP: ${smtpError.message || smtpError}`;
         logger.error(errorMessage);
+        if (smtpError.code) {
+          logger.error(`Código do erro: ${smtpError.code}`);
+        }
       }
       
       // Não lançar erro para não quebrar o registro do usuário
@@ -313,7 +338,8 @@ FORGETECH Professional
     }
 
     try {
-      await transporter.sendMail({
+      // Timeout adicional para o envio do email (60 segundos)
+      const sendEmailPromise = transporter.sendMail({
         from: `"FORGETECH Professional" <${process.env.SMTP_USER}>`,
         to: user.email,
         subject: 'Recuperação de Senha - FORGETECH Professional',
@@ -321,9 +347,23 @@ FORGETECH Professional
         text: emailText,
       });
 
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Timeout ao enviar email')), 60000);
+      });
+
+      await Promise.race([sendEmailPromise, timeoutPromise]);
+
       logger.info(`✅ Email de recuperação de senha enviado para ${user.email}`);
     } catch (smtpError: any) {
-      logger.error(`Erro ao enviar email de recuperação: ${smtpError.message}`);
+      if (smtpError.message === 'Timeout ao enviar email' || smtpError.code === 'ETIMEDOUT' || smtpError.code === 'ESOCKETTIMEDOUT') {
+        logger.error(`Timeout ao enviar email de recuperação: A conexão com o servidor SMTP demorou muito. Verifique se a porta ${process.env.SMTP_PORT} está acessível.`);
+        logger.error(`💡 Dica: Em produção, verifique se a porta SMTP não está bloqueada pelo firewall.`);
+      } else {
+        logger.error(`Erro ao enviar email de recuperação: ${smtpError.message || smtpError}`);
+        if (smtpError.code) {
+          logger.error(`Código do erro: ${smtpError.code}`);
+        }
+      }
       // Não lançar erro para não revelar se o email existe
       return;
     }

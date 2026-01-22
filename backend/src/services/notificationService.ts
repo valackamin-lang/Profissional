@@ -28,6 +28,16 @@ const createEmailTransporter = () => {
     tls: {
       rejectUnauthorized: false,
     },
+    // Configurações de timeout para produção
+    connectionTimeout: 60000, // 60 segundos para estabelecer conexão
+    socketTimeout: 60000, // 60 segundos para operações de socket
+    greetingTimeout: 30000, // 30 segundos para greeting do servidor
+    // Retry logic
+    pool: true, // Usar connection pooling
+    maxConnections: 5, // Máximo de conexões simultâneas
+    maxMessages: 100, // Máximo de mensagens por conexão
+    rateDelta: 1000, // Intervalo entre tentativas (ms)
+    rateLimit: 14, // Limite de mensagens por rateDelta
   });
 };
 
@@ -86,14 +96,29 @@ const sendEmailNotification = async (
       return;
     }
 
-    await emailTransporter.sendMail({
+    // Timeout adicional para o envio do email (60 segundos)
+    const sendEmailPromise = emailTransporter.sendMail({
       from: process.env.SMTP_USER,
       to: user.email,
       subject: title,
       html: emailHtml,
     });
-  } catch (error) {
-    console.error('Error sending email:', error);
+
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Timeout ao enviar email')), 60000);
+    });
+
+    await Promise.race([sendEmailPromise, timeoutPromise]);
+  } catch (error: any) {
+    if (error.message === 'Timeout ao enviar email' || error.code === 'ETIMEDOUT' || error.code === 'ESOCKETTIMEDOUT') {
+      console.error(`Timeout ao enviar email de notificação: A conexão com o servidor SMTP demorou muito. Verifique se a porta ${process.env.SMTP_PORT} está acessível.`);
+      console.error(`💡 Dica: Em produção, verifique se a porta SMTP não está bloqueada pelo firewall.`);
+    } else {
+      console.error('Error sending email:', error);
+      if (error.code) {
+        console.error(`Código do erro: ${error.code}`);
+      }
+    }
   }
 };
 
