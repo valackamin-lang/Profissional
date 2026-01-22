@@ -31,7 +31,7 @@ export class GPOService {
   constructor() {
     this.apiUrl =
       process.env.GPO_API_URL ||
-      'https://cerpagamentonline.emis.co.ao/online-payment-gateway/webframe/v1/frameToken';
+      'https://cerpagamentonline.emis.co.ao/online-payment-gateway/portal/frameToken';
     this.frameToken = process.env.GPO_FRAME_TOKEN || '';
     this.callbackUrl =
       process.env.GPO_CALLBACK_URL ||
@@ -122,20 +122,33 @@ export class GPOService {
     }
 
     try {
+      // Log para debug (remover em produção)
+      console.log('GPO Request:', {
+        url: this.apiUrl,
+        method: 'POST',
+        payload: { ...payload, token: '***' }, // Não logar o token completo
+      });
+
       const response = await this.httpClient.post<GPOPurchaseTokenResponse>(
         this.apiUrl,
         payload
       );
 
-      if (!response.data.id) {
+      if (!response.data || !response.data.id) {
         throw new Error('GPO não retornou token de compra válido');
       }
 
       return response.data;
     } catch (error: any) {
       if (error.response) {
+        // Se receber HTML, significa que a URL está errada
+        const errorData = typeof error.response.data === 'string' 
+          ? (error.response.data.includes('<!doctype html>') 
+              ? 'URL incorreta - recebido HTML em vez de JSON. Verifique GPO_API_URL no .env'
+              : error.response.data.substring(0, 200))
+          : JSON.stringify(error.response.data);
         throw new Error(
-          `Erro ao comunicar com GPO: ${error.response.status} - ${JSON.stringify(error.response.data)}`
+          `Erro ao comunicar com GPO: ${error.response.status} - ${errorData}`
         );
       }
       throw new Error(`Erro ao comunicar com GPO: ${error.message}`);
