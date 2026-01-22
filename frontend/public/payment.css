@@ -1,0 +1,267 @@
+/* Estilos customizados para o iframe de pagamento GPO */
+
+/* Container principal do iframe */
+.gpo-payment-container {
+  width: 100%;
+  min-height: 600px;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  background: #ffffff;
+}
+
+/* Estilos para elementos dentro do iframe (se aplicável) */
+.gpo-payment-container * {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Botões de pagamento */
+.gpo-payment-container button,
+.gpo-payment-container .btn,
+.gpo-payment-container input[type="submit"] {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.gpo-payment-container button:hover,
+.gpo-payment-container .btn:hover,
+.gpo-payment-container input[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.gpo-payment-container button:active,
+.gpo-payment-container .btn:active,
+.gpo-payment-container input[type="submit"]:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Campos de formulário */
+.gpo-payment-container input[type="text"],
+.gpo-payment-container input[type="number"],
+.gpo-payment-container input[type="email"],
+.gpo-payment-container input[type="tel"],
+.gpo-payment-container select,
+.gpo-payment-container textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  background: #ffffff;
+  color: #1f2937;
+}
+
+.gpo-payment-container input:focus,
+.gpo-payment-container select:focus,
+.gpo-payment-container textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Labels */
+.gpo-payment-container label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+}
+
+/* Cards e containers */
+.gpo-payment-container .card,
+.gpo-payment-container .payment-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+/* Títulos */
+.gpo-payment-container h1,
+.gpo-payment-container h2,
+.gpo-payment-container h3 {
+  color: #1f2937;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.gpo-payment-container h1 {
+  font-size: 28px;
+}
+
+.gpo-payment-container h2 {
+  font-size: 24px;
+}
+
+.gpo-payment-container h3 {
+  font-size: 20px;
+}
+
+/* Texto */
+.gpo-payment-container p {
+  color: #6b7280;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+/* Mensagens de status */
+.gpo-payment-container .success,
+.gpo-payment-container .alert-success {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border-left: 4px solid #10b981;
+  margin-bottom: 16px;
+}
+
+.gpo-payment-container .error,
+.gpo-payment-container .alert-error,
+.gpo-payment-container .alert-danger {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border-left: 4px solid #ef4444;
+  margin-bottom: 16px;
+}
+
+.gpo-payment-container .warning,
+.gpo-payment-container .alert-warning {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border-left: 4px solid #f59e0b;
+  margin-bottom: 16px;
+}
+
+.gpo-payment-container .info,
+.gpo-payment-container .alert-info {
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+  margin-bottom: 16px;
+}
+
+/* QR Code container */
+.gpo-payment-container .qr-code-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  background: #f9fafb;
+  border-radius: 12px;
+  margin: 16px 0;
+}
+
+/* Métodos de pagamento */
+.gpo-payment-container .payment-method {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.gpo-payment-container .payment-method:hover {
+  border-color: #667eea;
+  background: #f3f4f6;
+}
+
+.gpo-payment-container .payment-method.selected {
+  border-color: #667eea;
+  background: #eef2ff;
+}
+
+.gpo-payment-container .payment-method input[type="radio"] {
+  margin-right: 12px;
+  width: auto;
+}
+
+/* Loading spinner */
+.gpo-payment-container .loading,
+.gpo-payment-container .spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #f3f4f6;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .gpo-payment-container {
+    min-height: 500px;
+  }
+
+  .gpo-payment-container .card,
+  .gpo-payment-container .payment-card {
+    padding: 16px;
+  }
+
+  .gpo-payment-container h1 {
+    font-size: 24px;
+  }
+
+  .gpo-payment-container h2 {
+    font-size: 20px;
+  }
+}
+
+/* Acessibilidade */
+.gpo-payment-container *:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Scrollbar customizada */
+.gpo-payment-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.gpo-payment-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.gpo-payment-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.gpo-payment-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
