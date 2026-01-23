@@ -27,6 +27,17 @@ export const getOrCreateChat = async (
       throw new AppError('Perfil não encontrado', 404);
     }
 
+    // Validar se o participante existe
+    const participantProfile = await Profile.findByPk(participantId);
+    if (!participantProfile) {
+      throw new AppError('Participante não encontrado', 404);
+    }
+
+    // Não permitir criar chat consigo mesmo
+    if (participantId === profile.id) {
+      throw new AppError('Não é possível criar um chat consigo mesmo', 400);
+    }
+
     // Verificar se chat já existe
     let chat = await Chat.findOne({
       where: {
@@ -524,9 +535,24 @@ export const deleteMessage = async (
       throw new AppError('Mensagem não encontrada', 404);
     }
 
+    // Verificar se usuário pertence ao chat da mensagem
+    const chat = await Chat.findOne({
+      where: {
+        id: message.chatId,
+        [Op.or]: [
+          { participant1Id: profile.id },
+          { participant2Id: profile.id },
+        ],
+      },
+    });
+
+    if (!chat) {
+      throw new AppError('Chat não encontrado ou acesso negado', 404);
+    }
+
     // Verificar se é o remetente
     if (message.senderId !== profile.id) {
-      throw new AppError('Acesso negado', 403);
+      throw new AppError('Acesso negado: apenas o remetente pode deletar a mensagem', 403);
     }
 
     await message.destroy();

@@ -10,6 +10,10 @@ import logger from '../config/logger';
 import AuditLog from '../models/AuditLog';
 import { sendVerificationEmail, resendVerificationEmail, verifyEmailToken, sendPasswordResetEmail, verifyPasswordResetToken, clearPasswordResetToken } from '../services/emailService';
 
+// Whitelist de roles que podem ser criadas via registro público
+// ADMIN e outras roles privilegiadas NUNCA podem ser criadas via registro público
+const ALLOWED_REGISTRATION_ROLES = ['STUDENT', 'MENTOR', 'PARTNER'];
+
 export const register = async (
   req: Request,
   res: Response,
@@ -20,6 +24,12 @@ export const register = async (
 
     if (!email || !password) {
       throw new AppError('Email e senha são obrigatórios', 400);
+    }
+
+    // 🔒 SEGURANÇA: Validar que roleName não é uma role privilegiada
+    if (!ALLOWED_REGISTRATION_ROLES.includes(roleName)) {
+      logger.warn(`Tentativa de registro com role não permitida: ${roleName} - Email: ${email}`);
+      throw new AppError(`Role '${roleName}' não pode ser criada via registro público. Apenas STUDENT, MENTOR ou PARTNER são permitidas.`, 403);
     }
 
     // Check if user exists

@@ -3,6 +3,7 @@ import { Server as SocketIOServer, Socket } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import Profile from '../models/Profile';
 import User from '../models/User';
+import logger from './logger';
 
 interface SocketUser {
   userId: string;
@@ -53,7 +54,7 @@ export const initializeSocket = (httpServer: HTTPServer): SocketIOServer => {
     const userId = (socket as any).userId;
     const profileId = (socket as any).profileId;
 
-    console.log(`✅ Usuário conectado: ${userId} (Socket: ${socket.id})`);
+    logger.info('User connected', { userId, socketId: socket.id });
 
     // Registrar usuário como conectado
     connectedUsers.set(userId, socket.id);
@@ -64,13 +65,13 @@ export const initializeSocket = (httpServer: HTTPServer): SocketIOServer => {
     // Entrar em salas de chat específicas
     socket.on('chat:join', (chatId: string) => {
       socket.join(`chat:${chatId}`);
-      console.log(`Usuário ${userId} entrou no chat ${chatId}`);
+      logger.debug('User joined chat', { userId, chatId });
     });
 
     // Sair de salas de chat
     socket.on('chat:leave', (chatId: string) => {
       socket.leave(`chat:${chatId}`);
-      console.log(`Usuário ${userId} saiu do chat ${chatId}`);
+      logger.debug('User left chat', { userId, chatId });
     });
 
     // Marcar mensagens como lidas
@@ -84,7 +85,7 @@ export const initializeSocket = (httpServer: HTTPServer): SocketIOServer => {
 
     // Desconexão
     socket.on('disconnect', () => {
-      console.log(`❌ Usuário desconectado: ${userId}`);
+      logger.info('User disconnected', { userId, socketId: socket.id });
       connectedUsers.delete(userId);
       socket.broadcast.emit('user:offline', { userId, profileId });
     });

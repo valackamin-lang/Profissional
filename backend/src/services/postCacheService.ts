@@ -4,6 +4,7 @@ import PostLike from '../models/PostLike';
 import Profile from '../models/Profile';
 import User from '../models/User';
 import { Op } from 'sequelize';
+import logger from '../config/logger';
 
 // TTLs em segundos
 const POST_CACHE_TTL = 300; // 5 minutos
@@ -95,7 +96,11 @@ export const getCachedPost = async (postId: string, userId?: string): Promise<Ca
 
     return postData;
   } catch (error) {
-    console.error('Error in getCachedPost:', error);
+    logger.error('Error in getCachedPost', {
+      postId,
+      message: error instanceof Error ? error.message : String(error),
+      ...(process.env.NODE_ENV === 'development' && { stack: error instanceof Error ? error.stack : undefined }),
+    });
     // Em caso de erro no cache, buscar do banco
     const post = await Post.findByPk(postId, {
       include: [
@@ -142,7 +147,11 @@ export const getCachedCounters = async (postId: string): Promise<PostCounters> =
 
     return counters;
   } catch (error) {
-    console.error('Error in getCachedCounters:', error);
+    logger.error('Error in getCachedCounters', {
+      postId,
+      message: error instanceof Error ? error.message : String(error),
+      ...(process.env.NODE_ENV === 'development' && { stack: error instanceof Error ? error.stack : undefined }),
+    });
     // Em caso de erro, buscar do banco
     const post = await Post.findByPk(postId, {
       attributes: ['likesCount', 'commentsCount', 'sharesCount'],
@@ -166,7 +175,11 @@ export const updateCachedCounters = async (
     const updated = { ...current, ...counters };
     await redis.setex(cacheKey, COUNTERS_CACHE_TTL, JSON.stringify(updated));
   } catch (error) {
-    console.error('Error updating cached counters:', error);
+    logger.error('Error updating cached counters', {
+      postId,
+      message: error instanceof Error ? error.message : String(error),
+      ...(process.env.NODE_ENV === 'development' && { stack: error instanceof Error ? error.stack : undefined }),
+    });
   }
 };
 
@@ -200,7 +213,12 @@ export const checkUserLikedPost = async (userId: string, postId: string): Promis
 
     return isLiked;
   } catch (error) {
-    console.error('Error in checkUserLikedPost:', error);
+    logger.error('Error in checkUserLikedPost', {
+      userId,
+      postId,
+      message: error instanceof Error ? error.message : String(error),
+      ...(process.env.NODE_ENV === 'development' && { stack: error instanceof Error ? error.stack : undefined }),
+    });
     // Em caso de erro, buscar do banco
     const profile = await Profile.findOne({ where: { userId } });
     if (!profile) {
@@ -269,7 +287,11 @@ export const getCachedUserLikes = async (
 
     return new Set(cachedLikes);
   } catch (error) {
-    console.error('Error in getCachedUserLikes:', error);
+    logger.error('Error in getCachedUserLikes', {
+      userId,
+      message: error instanceof Error ? error.message : String(error),
+      ...(process.env.NODE_ENV === 'development' && { stack: error instanceof Error ? error.stack : undefined }),
+    });
     // Em caso de erro, buscar tudo do banco
     const profile = await Profile.findOne({ where: { userId } });
     if (!profile) {
@@ -308,7 +330,11 @@ export const invalidatePostCache = async (postId: string): Promise<void> => {
       await redis.del(...postListKeys);
     }
   } catch (error) {
-    console.error('Error invalidating post cache:', error);
+    logger.error('Error invalidating post cache', {
+      postId,
+      message: error instanceof Error ? error.message : String(error),
+      ...(process.env.NODE_ENV === 'development' && { stack: error instanceof Error ? error.stack : undefined }),
+    });
   }
 };
 
@@ -320,7 +346,11 @@ export const invalidateUserLikesCache = async (userId: string): Promise<void> =>
     const likesKey = getUserLikesKey(userId);
     await redis.del(likesKey);
   } catch (error) {
-    console.error('Error invalidating user likes cache:', error);
+    logger.error('Error invalidating user likes cache', {
+      userId,
+      message: error instanceof Error ? error.message : String(error),
+      ...(process.env.NODE_ENV === 'development' && { stack: error instanceof Error ? error.stack : undefined }),
+    });
   }
 };
 
@@ -337,7 +367,12 @@ export const updateUserLikeCache = async (
     await redis.hset(likesKey, postId, isLiked ? '1' : '0');
     await redis.expire(likesKey, USER_LIKES_CACHE_TTL);
   } catch (error) {
-    console.error('Error updating user like cache:', error);
+    logger.error('Error updating user like cache', {
+      userId,
+      postId,
+      message: error instanceof Error ? error.message : String(error),
+      ...(process.env.NODE_ENV === 'development' && { stack: error instanceof Error ? error.stack : undefined }),
+    });
   }
 };
 
@@ -356,6 +391,9 @@ export const invalidateAllPostCaches = async (): Promise<void> => {
       await redis.del(...allKeys);
     }
   } catch (error) {
-    console.error('Error invalidating all post caches:', error);
+    logger.error('Error invalidating all post caches', {
+      message: error instanceof Error ? error.message : String(error),
+      ...(process.env.NODE_ENV === 'development' && { stack: error instanceof Error ? error.stack : undefined }),
+    });
   }
 };

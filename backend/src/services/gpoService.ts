@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import https from 'https';
 import Payment from '../models/Payment';
+import logger from '../config/logger';
 
 interface GPOPurchaseTokenRequest {
   reference: string;
@@ -122,12 +123,14 @@ export class GPOService {
     }
 
     try {
-      // Log para debug (remover em produção)
-      console.log('GPO Request:', {
-        url: this.apiUrl,
-        method: 'POST',
-        payload: { ...payload, token: '***' }, // Não logar o token completo
-      });
+      // Log sanitizado (não logar tokens ou dados sensíveis)
+      if (process.env.NODE_ENV === 'development') {
+        logger.debug('GPO Request', {
+          url: this.apiUrl,
+          method: 'POST',
+          // Não logar payload completo em produção
+        });
+      }
 
       const response = await this.httpClient.post<GPOPurchaseTokenResponse>(
         this.apiUrl,

@@ -1,5 +1,6 @@
 import Redis from 'ioredis';
 import dotenv from 'dotenv';
+import logger from './logger';
 
 dotenv.config();
 
@@ -28,13 +29,19 @@ redis.on('connect', () => {
   const host = process.env.REDIS_HOST || 'localhost';
   const port = process.env.REDIS_PORT || '6379';
   const hasAuth = !!(process.env.REDIS_PASSWORD || process.env.REDIS_USER || process.env.REDISUSER);
-  console.log(`✅ Redis connection established successfully. ${host}:${port}${hasAuth ? ' (authenticated)' : ''}`);
+  logger.info(`Redis connection established successfully. ${host}:${port}${hasAuth ? ' (authenticated)' : ''}`);
 });
 
 redis.on('error', (error: any) => {
-  console.error('❌ Redis connection error:', error);
+  logger.error('Redis connection error', {
+    message: error.message,
+    code: error.code,
+    // Não logar detalhes sensíveis de erro de autenticação
+    ...(process.env.NODE_ENV === 'development' && { stack: error.stack }),
+  });
+  
   if (error.message?.includes('password') || error.message?.includes('auth') || error.message?.includes('AUTH')) {
-    console.error('💡 Dica: Verifique REDIS_USER e REDIS_PASSWORD no arquivo .env');
+    logger.warn('Redis authentication error - Verifique REDIS_USER e REDIS_PASSWORD no arquivo .env');
   }
 });
 

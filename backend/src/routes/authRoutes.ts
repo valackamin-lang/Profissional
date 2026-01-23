@@ -13,7 +13,10 @@ router.post(
   [
     body('email').isEmail().withMessage('Email inválido'),
     body('password').isLength({ min: 6 }).withMessage('Senha deve ter no mínimo 6 caracteres'),
-    body('roleName').optional().isString(),
+    body('roleName')
+      .optional()
+      .isIn(['STUDENT', 'MENTOR', 'PARTNER'])
+      .withMessage('Role inválida. Apenas STUDENT, MENTOR ou PARTNER são permitidas via registro público'),
   ],
   validateRequest,
   register
