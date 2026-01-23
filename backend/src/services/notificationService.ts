@@ -1,51 +1,22 @@
 import Notification from '../models/Notification';
 import User from '../models/User';
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
+import { Resend } from 'resend';
+import logger from '../config/logger';
 
-dotenv.config();
-
-// Função para criar transporter com credenciais limpas
-const createEmailTransporter = () => {
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+// Inicializar Resend
+const getResendClient = () => {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
     return null;
   }
-
-  const smtpHost = process.env.SMTP_HOST.trim();
-  const smtpUser = process.env.SMTP_USER.trim();
-  // Remover espaços da senha (App Passwords do Gmail podem ter espaços)
-  const smtpPassword = process.env.SMTP_PASSWORD.replace(/\s+/g, '').trim();
-  const smtpPort = parseInt(process.env.SMTP_PORT || '587');
-
-  return nodemailer.createTransport({
-    host: smtpHost,
-    port: smtpPort,
-    secure: smtpPort === 465,
-    auth: {
-      user: smtpUser,
-      pass: smtpPassword,
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-    // Configurações de timeout para produção
-    connectionTimeout: 60000, // 60 segundos para estabelecer conexão
-    socketTimeout: 60000, // 60 segundos para operações de socket
-    greetingTimeout: 30000, // 30 segundos para greeting do servidor
-    // Retry logic
-    pool: true, // Usar connection pooling
-    maxConnections: 5, // Máximo de conexões simultâneas
-    maxMessages: 100, // Máximo de mensagens por conexão
-    rateDelta: 1000, // Intervalo entre tentativas (ms)
-    rateLimit: 14, // Limite de mensagens por rateDelta
-  });
+  return new Resend(apiKey);
 };
 
-const emailTransporter = createEmailTransporter();
+const resend = getResendClient();
 
 export const createNotification = async (
   userId: string,
-  type: 'JOB' | 'EVENT' | 'MENTORSHIP' | 'APPLICATION' | 'SYSTEM',
+  type: 'JOB' | 'EVENT' | 'MENTORSHIP' | 'APPLICATION' | 'SYSTEM' | 'FOLLOW',
   title: string,
   message: string,
   link?: string,
@@ -63,7 +34,7 @@ export const createNotification = async (
 
   // Send email notification (async, don't wait)
   sendEmailNotification(userId, title, message, link).catch((error) => {
-    console.error('Error sending email notification:', error);
+    logger.error('Error sending email notification:', error);
   });
 
   return notification;
@@ -81,44 +52,60 @@ const sendEmailNotification = async (
       return;
     }
 
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const fullLink = link ? `${frontendUrl}${link}` : '';
+
     const emailHtml = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #0ea5e9;">${title}</h2>
-        <p>${message}</p>
-        ${link ? `<a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}${link}" style="display: inline-block; padding: 10px 20px; background-color: #0ea5e9; color: white; text-decoration: none; border-radius: 5px;">Ver mais</a>` : ''}
-        <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
-        <p style="color: #666; font-size: 12px;">FORGETECH Professional</p>
-      </div>
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+            <h1 style="color: white; margin: 0;">FORGETECH Professional</h1>
+          </div>
+          <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
+            <h2 style="color: #333; margin-top: 0;">${title}</h2>
+            <p>${message}</p>
+            ${fullLink ? `
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="${fullLink}" style="display: inline-block; padding: 15px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Ver mais</a>
+              </div>
+            ` : ''}
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+            <p style="color: #999; font-size: 12px; text-align: center;">
+              FORGETECH Professional - Plataforma de Desenvolvimento Profissional<br>
+              Este é um email automático, por favor não responda.
+            </p>
+          </div>
+        </body>
+      </html>
     `;
 
-    if (!emailTransporter) {
-      console.warn('⚠️  SMTP não configurado. Email não será enviado.');
+    if (!resend) {
+      logger.warn('⚠️  RESEND_API_KEY não configurada. Email não será enviado.');
       return;
     }
 
-    // Timeout adicional para o envio do email (60 segundos)
-    const sendEmailPromise = emailTransporter.sendMail({
-      from: process.env.SMTP_USER,
-      to: user.email,
-      subject: title,
-      html: emailHtml,
-    });
-
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('Timeout ao enviar email')), 60000);
-    });
-
-    await Promise.race([sendEmailPromise, timeoutPromise]);
-  } catch (error: any) {
-    if (error.message === 'Timeout ao enviar email' || error.code === 'ETIMEDOUT' || error.code === 'ESOCKETTIMEDOUT') {
-      console.error(`Timeout ao enviar email de notificação: A conexão com o servidor SMTP demorou muito. Verifique se a porta ${process.env.SMTP_PORT} está acessível.`);
-      console.error(`💡 Dica: Em produção, verifique se a porta SMTP não está bloqueada pelo firewall.`);
-    } else {
-      console.error('Error sending email:', error);
-      if (error.code) {
-        console.error(`Código do erro: ${error.code}`);
+    try {
+      const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+      
+      await resend.emails.send({
+        from: fromEmail,
+        to: user.email,
+        subject: title,
+        html: emailHtml,
+      });
+    } catch (error: any) {
+      logger.error(`Erro ao enviar email de notificação: ${error.message || error}`);
+      if (error.statusCode) {
+        logger.error(`Código do erro: ${error.statusCode}`);
       }
     }
+  } catch (error: any) {
+    logger.error('Error sending email notification:', error);
   }
 };
 

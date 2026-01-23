@@ -1,54 +1,16 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import User from '../models/User';
 import logger from '../config/logger';
 import crypto from 'crypto';
 
-// Verificar se as configurações SMTP estão disponíveis
-const getEmailTransporter = () => {
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
-    logger.warn('⚠️  Configurações SMTP não encontradas. Emails não serão enviados.');
+// Inicializar Resend
+const getResendClient = () => {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    logger.warn('⚠️  RESEND_API_KEY não encontrada. Emails não serão enviados.');
     return null;
   }
-
-  // Limpar e validar credenciais
-  const smtpHost = process.env.SMTP_HOST.trim();
-  const smtpUser = process.env.SMTP_USER.trim();
-  // Remover espaços da senha (App Passwords do Gmail podem ter espaços)
-  const smtpPassword = process.env.SMTP_PASSWORD.replace(/\s+/g, '').trim();
-  const smtpPort = parseInt(process.env.SMTP_PORT || '587');
-
-  // Validações
-  if (!smtpUser || !smtpPassword) {
-    logger.error('❌ SMTP_USER ou SMTP_PASSWORD estão vazios após limpeza');
-    return null;
-  }
-
-  // Log de configuração (sem mostrar senha completa)
-  logger.info(`📧 Configurando SMTP: ${smtpHost}:${smtpPort} | User: ${smtpUser} | Password: ${smtpPassword.length > 0 ? '***' + smtpPassword.slice(-4) : 'vazia'}`);
-
-  return nodemailer.createTransport({
-    host: smtpHost,
-    port: smtpPort,
-    secure: smtpPort === 465,
-    auth: {
-      user: smtpUser,
-      pass: smtpPassword,
-    },
-    // Opções adicionais para melhor compatibilidade
-    tls: {
-      rejectUnauthorized: false, // Aceitar certificados auto-assinados (apenas desenvolvimento)
-    },
-    // Configurações de timeout para produção
-    connectionTimeout: 60000, // 60 segundos para estabelecer conexão
-    socketTimeout: 60000, // 60 segundos para operações de socket
-    greetingTimeout: 30000, // 30 segundos para greeting do servidor
-    // Retry logic
-    pool: true, // Usar connection pooling
-    maxConnections: 5, // Máximo de conexões simultâneas
-    maxMessages: 100, // Máximo de mensagens por conexão
-    rateDelta: 1000, // Intervalo entre tentativas (ms)
-    rateLimit: 14, // Limite de mensagens por rateDelta
-  });
+  return new Resend(apiKey);
 };
 
 /**
@@ -136,54 +98,39 @@ Este link expira em 24 horas. Se você não criou esta conta, pode ignorar este 
 FORGETECH Professional
     `;
 
-    const transporter = getEmailTransporter();
-    if (!transporter) {
-      logger.warn(`⚠️  Não foi possível enviar email de verificação para ${user.email} - SMTP não configurado`);
+    const resend = getResendClient();
+    if (!resend) {
+      logger.warn(`⚠️  Não foi possível enviar email de verificação para ${user.email} - RESEND_API_KEY não configurada`);
       return;
     }
 
     try {
-      // Timeout adicional para o envio do email (60 segundos)
-      const sendEmailPromise = transporter.sendMail({
-        from: `"FORGETECH Professional" <${process.env.SMTP_USER}>`,
+      const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+      
+      await resend.emails.send({
+        from: fromEmail,
         to: user.email,
         subject: 'Verifique seu email - FORGETECH Professional',
         html: emailHtml,
         text: emailText,
       });
 
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Timeout ao enviar email')), 60000);
-      });
-
-      await Promise.race([sendEmailPromise, timeoutPromise]);
-
       logger.info(`✅ Email de verificação enviado para ${user.email}`);
     } catch (smtpError: any) {
-      // Tratamento específico de erros SMTP
+      // Tratamento específico de erros
       let errorMessage = `Erro ao enviar email de verificação para ${user.email}`;
       
-      if (smtpError.message === 'Timeout ao enviar email' || smtpError.code === 'ETIMEDOUT' || smtpError.code === 'ESOCKETTIMEDOUT') {
-        errorMessage = `Timeout ao enviar email: A conexão com o servidor SMTP demorou muito. Verifique se a porta ${process.env.SMTP_PORT} está acessível e se não há firewall bloqueando.`;
-        logger.error(`${errorMessage}\n💡 Dica: Em produção, verifique se a porta SMTP não está bloqueada pelo firewall.`);
-        logger.error(`💡 Dica: Tente usar porta 465 (SSL) ou verifique conectividade de rede.`);
-      } else if (smtpError.code === 'EAUTH') {
-        errorMessage = `Erro de autenticação SMTP: ${smtpError.message}`;
-        logger.error(`${errorMessage}\n💡 Dica: Verifique se está usando uma "App Password" do Gmail, não a senha normal.`);
-        logger.error('📖 Consulte CONFIGURACAO_SMTP.md para instruções detalhadas.');
-      } else if (smtpError.code === 'ECONNECTION' || smtpError.code === 'ENOTFOUND') {
-        errorMessage = `Erro de conexão SMTP: Não foi possível conectar ao servidor ${process.env.SMTP_HOST}`;
-        logger.error(`${errorMessage}\n💡 Dica: Verifique SMTP_HOST e SMTP_PORT no arquivo .env`);
-        logger.error(`💡 Dica: Em produção, verifique se o DNS está resolvendo corretamente e se há firewall bloqueando.`);
-      } else if (smtpError.responseCode === 535) {
-        errorMessage = `Erro de autenticação: Credenciais SMTP inválidas`;
-        logger.error(`${errorMessage}\n💡 Dica: Para Gmail, você precisa usar uma "App Password" (senha de aplicativo).`);
-        logger.error('📖 Consulte CONFIGURACAO_SMTP.md para instruções detalhadas.');
+      if (smtpError.message?.includes('Invalid API key') || smtpError.message?.includes('Unauthorized')) {
+        errorMessage = `Erro de autenticação Resend: API key inválida`;
+        logger.error(`${errorMessage}\n💡 Dica: Verifique se RESEND_API_KEY está correta no arquivo .env`);
+      } else if (smtpError.message?.includes('domain') || smtpError.message?.includes('Domain')) {
+        errorMessage = `Erro de domínio Resend: ${smtpError.message}`;
+        logger.error(`${errorMessage}\n💡 Dica: Verifique se o domínio do email "from" está verificado no Resend`);
       } else {
-        errorMessage = `Erro SMTP: ${smtpError.message || smtpError}`;
+        errorMessage = `Erro Resend: ${smtpError.message || smtpError}`;
         logger.error(errorMessage);
-        if (smtpError.code) {
-          logger.error(`Código do erro: ${smtpError.code}`);
+        if (smtpError.statusCode) {
+          logger.error(`Código do erro: ${smtpError.statusCode}`);
         }
       }
       
@@ -331,37 +278,33 @@ Este link expira em 1 hora. Se você não solicitou a recuperação de senha, ig
 FORGETECH Professional
     `;
 
-    const transporter = getEmailTransporter();
-    if (!transporter) {
-      logger.warn(`⚠️  Não foi possível enviar email de recuperação para ${email} - SMTP não configurado`);
+    const resend = getResendClient();
+    if (!resend) {
+      logger.warn(`⚠️  Não foi possível enviar email de recuperação para ${email} - RESEND_API_KEY não configurada`);
       return;
     }
 
     try {
-      // Timeout adicional para o envio do email (60 segundos)
-      const sendEmailPromise = transporter.sendMail({
-        from: `"FORGETECH Professional" <${process.env.SMTP_USER}>`,
+      const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+      
+      await resend.emails.send({
+        from: fromEmail,
         to: user.email,
         subject: 'Recuperação de Senha - FORGETECH Professional',
         html: emailHtml,
         text: emailText,
       });
 
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Timeout ao enviar email')), 60000);
-      });
-
-      await Promise.race([sendEmailPromise, timeoutPromise]);
-
       logger.info(`✅ Email de recuperação de senha enviado para ${user.email}`);
     } catch (smtpError: any) {
-      if (smtpError.message === 'Timeout ao enviar email' || smtpError.code === 'ETIMEDOUT' || smtpError.code === 'ESOCKETTIMEDOUT') {
-        logger.error(`Timeout ao enviar email de recuperação: A conexão com o servidor SMTP demorou muito. Verifique se a porta ${process.env.SMTP_PORT} está acessível.`);
-        logger.error(`💡 Dica: Em produção, verifique se a porta SMTP não está bloqueada pelo firewall.`);
+      if (smtpError.message?.includes('Invalid API key') || smtpError.message?.includes('Unauthorized')) {
+        logger.error(`Erro de autenticação Resend: API key inválida`);
+      } else if (smtpError.message?.includes('domain') || smtpError.message?.includes('Domain')) {
+        logger.error(`Erro de domínio Resend: ${smtpError.message}`);
       } else {
         logger.error(`Erro ao enviar email de recuperação: ${smtpError.message || smtpError}`);
-        if (smtpError.code) {
-          logger.error(`Código do erro: ${smtpError.code}`);
+        if (smtpError.statusCode) {
+          logger.error(`Código do erro: ${smtpError.statusCode}`);
         }
       }
       // Não lançar erro para não revelar se o email existe
