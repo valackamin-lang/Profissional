@@ -1,18 +1,8 @@
 import Notification from '../models/Notification';
 import User from '../models/User';
-import { Resend } from 'resend';
 import logger from '../config/logger';
 
-// Inicializar Resend
-const getResendClient = () => {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    return null;
-  }
-  return new Resend(apiKey);
-};
 
-const resend = getResendClient();
 
 export const createNotification = async (
   userId: string,
@@ -31,6 +21,7 @@ export const createNotification = async (
     metadata,
     status: 'UNREAD',
   });
+import nodemailer from 'nodemailer';
 
   // Send email notification (async, don't wait)
   sendEmailNotification(userId, title, message, link).catch((error) => {
@@ -85,13 +76,19 @@ const sendEmailNotification = async (
     `;
 
     if (!resend) {
-      logger.warn('⚠️  RESEND_API_KEY não configurada. Email não será enviado.');
-      return;
-    }
-
     try {
-      const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+            const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER || 'onboarding@resend.dev';
       
+            // SMTP email sending logic should be implemented here
+            // Example: Use nodemailer or another SMTP library to send the email
+            // ...existing code...
+            // For example:
+            // await smtpTransport.sendMail({
+            //     from: fromEmail,
+            //     to: user.email,
+            //     subject: title,
+            //     html: emailHtml,
+            // });
       await resend.emails.send({
         from: fromEmail,
         to: user.email,
@@ -125,20 +122,24 @@ export const markAllAsRead = async (userId: string): Promise<void> => {
   await Notification.update(
     {
       status: 'READ',
-      readAt: new Date(),
-    },
-    {
-      where: {
-        userId,
-        status: 'UNREAD',
-      },
-    }
-  );
-};
+              const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER || 'onboarding@resend.dev';
+              const smtpHost = process.env.SMTP_HOST || 'localhost';
+              const smtpPort = parseInt(process.env.SMTP_PORT || '587', 10);
+              const smtpUser = process.env.SMTP_USER;
+              const smtpPass = process.env.SMTP_PASSWORD;
 
-export const getUserNotifications = async (
-  userId: string,
-  page: number = 1,
+              const transporter = nodemailer.createTransport({
+                host: smtpHost,
+                port: smtpPort,
+                } : undefined,
+              });
+
+              await transporter.sendMail({
+                from: fromEmail,
+                to: user.email,
+                subject: title,
+                html: emailHtml,
+              });
   limit: number = 20,
   unreadOnly: boolean = false
 ): Promise<{ notifications: Notification[]; total: number }> => {

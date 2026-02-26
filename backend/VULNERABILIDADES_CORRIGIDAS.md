@@ -13,7 +13,7 @@
 
 2. **nodemailer** (moderate) - Múltiplas vulnerabilidades
    - **Status**: Removido (não é mais necessário)
-   - **Motivo**: Migramos para Resend, então o nodemailer não é mais usado
+   - **Motivo**: Migramos para SMTP (nodemailer), removendo dependência do Resend
    - **Ação**: Removido do `package.json`
    - **Vulnerabilidades**:
      - Email to an unintended domain can occur due to Interpretation Conflict
@@ -30,7 +30,7 @@
 ## Alterações no package.json
 
 ### Dependências Removidas
-- `nodemailer`: `^6.9.7` ❌ (removido - usando Resend agora)
+   - `nodemailer`: `^6.9.7` ✅ (usando SMTP)
 
 ### Dependências Atualizadas
 - `bcrypt`: `^5.1.1` → `^6.0.0` ✅
@@ -97,4 +97,4 @@ export const comparePassword = async (password: string, hash: string): Promise<b
 
 - [bcrypt 6.0.0 Release Notes](https://github.com/kelektiv/node.bcrypt.js/releases)
 - [npm audit documentation](https://docs.npmjs.com/cli/v8/commands/npm-audit)
-- [Resend Migration](./CONFIGURACAO_RESEND.md)
+   - [Configuração SMTP](./CONFIGURACAO_SMTP.md)

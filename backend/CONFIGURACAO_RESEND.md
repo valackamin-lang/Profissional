@@ -5,11 +5,6 @@ Este guia explica como configurar o Resend para envio de emails na aplicação.
 ## 🚀 Por que Resend?
 
 O Resend é um serviço moderno de email que oferece:
-- ✅ **Sem problemas de timeout** - API REST confiável
-- ✅ **Melhor deliverability** - Emails chegam na caixa de entrada
-- ✅ **Fácil configuração** - Apenas uma API key
-- ✅ **Ideal para produção** - Sem problemas de firewall ou portas bloqueadas
-- ✅ **Analytics** - Dashboard com estatísticas de envio
 
 ## 📝 Configuração Básica
 
@@ -31,8 +26,6 @@ RESEND_FROM_EMAIL=onboarding@resend.dev
 ```
 
 **Importante:**
-- `RESEND_API_KEY`: Sua API key do Resend
-- `RESEND_FROM_EMAIL`: 
   - **Desenvolvimento**: Use `onboarding@resend.dev` (domínio padrão do Resend)
   - **Produção**: Configure um domínio verificado (ex: `noreply@seudominio.com`)
 
@@ -73,8 +66,6 @@ O sistema envia os seguintes emails via Resend:
 ### Erro: "Domain not verified"
 
 **Solução:** 
-- Em desenvolvimento, use `onboarding@resend.dev`
-- Em produção, verifique seu domínio no dashboard do Resend
 
 ### Email não chega
 
@@ -87,49 +78,23 @@ O sistema envia os seguintes emails via Resend:
 ## 📊 Monitoramento
 
 O Resend oferece um dashboard completo com:
-- Taxa de entrega
-- Taxa de abertura
-- Taxa de cliques
-- Logs de envio
-- Erros e bouncebacks
 
 Acesse: [https://resend.com/emails](https://resend.com/emails)
 
 ## 💰 Planos e Limites
 
 ### Plano Gratuito
-- 3.000 emails/mês
-- 100 emails/dia
-- Domínio `resend.dev` incluído
 
 ### Planos Pagos
-- Mais emails por mês
-- Domínios personalizados
-- Suporte prioritário
-- Analytics avançados
 
 ## 🔒 Segurança
 
-- **Nunca** commite a API key no Git
-- Use variáveis de ambiente em produção
-- Rotacione a API key regularmente
-- Use domínios verificados em produção
 
 ## 📚 Recursos
 
-- [Documentação Resend](https://resend.com/docs)
-- [API Reference](https://resend.com/docs/api-reference)
-- [Dashboard](https://resend.com/emails)
 
 ## ✅ Checklist
 
-- [ ] Conta criada no Resend
-- [ ] API key gerada e copiada
-- [ ] `RESEND_API_KEY` configurado no `.env`
-- [ ] `RESEND_FROM_EMAIL` configurado
-- [ ] Domínio verificado (se usar domínio personalizado)
-- [ ] Teste de envio realizado
-- [ ] Logs verificados
 
 ## 🎯 Migração de SMTP para Resend
 
@@ -142,6 +107,8 @@ Se você estava usando SMTP antes:
 
 O código já foi atualizado para usar Resend automaticamente quando `RESEND_API_KEY` estiver configurado.
 
+
+Arquivo obsoleto: a aplicação agora utiliza SMTP (nodemailer) para envio de e-mails. Consulte CONFIGURACAO_SMTP.md para detalhes.
 ---
 
 **Nota:** O sistema ainda suporta SMTP como fallback, mas Resend é recomendado para produção devido à sua confiabilidade e facilidade de uso.

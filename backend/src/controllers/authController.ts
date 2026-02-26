@@ -63,6 +63,13 @@ export const register = async (
       roleId: role.id,
     });
 
+    // Criar Profile automaticamente
+    await Profile.create({
+      userId: user.id,
+      type: role.name === 'STUDENT' ? 'STUDENT' : (role.name === 'MENTOR' ? 'MENTOR' : (role.name === 'PARTNER' ? 'COMPANY' : 'PROFESSIONAL')),
+      // Adicione outros campos obrigatórios do Profile aqui, se necessário
+    });
+
     // Generate tokens
     const tokenPayload = {
       userId: user.id,
@@ -106,6 +113,7 @@ export const register = async (
         message: 'Conta criada com sucesso! Verifique seu email para ativar sua conta.',
       },
     });
+    return;
   } catch (error) {
     next(error);
   }

@@ -1,17 +1,26 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
+
+// Inicializar transporter SMTP
+const getSmtpTransporter = () => {
+  const host = process.env.SMTP_HOST;
+  const port = process.env.SMTP_PORT;
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASSWORD;
+  if (!host || !port || !user || !pass) {
+    logger.warn('⚠️  SMTP config não encontrada. Emails não serão enviados.');
+    return null;
+  }
+  return nodemailer.createTransport({
+    host,
+    port: Number(port),
+    secure: Number(port) === 465, // true para 465, false para outros
+    auth: { user, pass },
+  });
+};
 import User from '../models/User';
 import logger from '../config/logger';
 import crypto from 'crypto';
 
-// Inicializar Resend
-const getResendClient = () => {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    logger.warn('⚠️  RESEND_API_KEY não encontrada. Emails não serão enviados.');
-    return null;
-  }
-  return new Resend(apiKey);
-};
 
 /**
  * Gera token de verificação de email
@@ -98,44 +107,23 @@ Este link expira em 24 horas. Se você não criou esta conta, pode ignorar este 
 FORGETECH Professional
     `;
 
-    const resend = getResendClient();
-    if (!resend) {
-      logger.warn(`⚠️  Não foi possível enviar email de verificação para ${user.email} - RESEND_API_KEY não configurada`);
+    const transporter = getSmtpTransporter();
+    if (!transporter) {
+      logger.warn(`⚠️  Não foi possível enviar email de verificação para ${user.email} - SMTP não configurado`);
       return;
     }
-
     try {
-      const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-      
-      await resend.emails.send({
+      const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
+      await transporter.sendMail({
         from: fromEmail,
         to: user.email,
         subject: 'Verifique seu email - FORGETECH Professional',
         html: emailHtml,
         text: emailText,
       });
-
       logger.info(`✅ Email de verificação enviado para ${user.email}`);
     } catch (smtpError: any) {
-      // Tratamento específico de erros
-      let errorMessage = `Erro ao enviar email de verificação para ${user.email}`;
-      
-      if (smtpError.message?.includes('Invalid API key') || smtpError.message?.includes('Unauthorized')) {
-        errorMessage = `Erro de autenticação Resend: API key inválida`;
-        logger.error(`${errorMessage}\n💡 Dica: Verifique se RESEND_API_KEY está correta no arquivo .env`);
-      } else if (smtpError.message?.includes('domain') || smtpError.message?.includes('Domain')) {
-        errorMessage = `Erro de domínio Resend: ${smtpError.message}`;
-        logger.error(`${errorMessage}\n💡 Dica: Verifique se o domínio do email "from" está verificado no Resend`);
-      } else {
-        errorMessage = `Erro Resend: ${smtpError.message || smtpError}`;
-        logger.error(errorMessage);
-        if (smtpError.statusCode) {
-          logger.error(`Código do erro: ${smtpError.statusCode}`);
-        }
-      }
-      
-      // Não lançar erro para não quebrar o registro do usuário
-      // O token já foi salvo, então o usuário pode solicitar reenvio
+      logger.error(`Erro ao enviar email de verificação para ${user.email}: ${smtpError.message || smtpError}`);
       logger.warn(`⚠️  Email não enviado, mas token de verificação foi gerado. Usuário pode solicitar reenvio.`);
       return;
     }
@@ -278,36 +266,23 @@ Este link expira em 1 hora. Se você não solicitou a recuperação de senha, ig
 FORGETECH Professional
     `;
 
-    const resend = getResendClient();
-    if (!resend) {
-      logger.warn(`⚠️  Não foi possível enviar email de recuperação para ${email} - RESEND_API_KEY não configurada`);
+    const transporter = getSmtpTransporter();
+    if (!transporter) {
+      logger.warn(`⚠️  Não foi possível enviar email de recuperação para ${email} - SMTP não configurado`);
       return;
     }
-
     try {
-      const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-      
-      await resend.emails.send({
+      const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
+      await transporter.sendMail({
         from: fromEmail,
         to: user.email,
         subject: 'Recuperação de Senha - FORGETECH Professional',
         html: emailHtml,
         text: emailText,
       });
-
       logger.info(`✅ Email de recuperação de senha enviado para ${user.email}`);
     } catch (smtpError: any) {
-      if (smtpError.message?.includes('Invalid API key') || smtpError.message?.includes('Unauthorized')) {
-        logger.error(`Erro de autenticação Resend: API key inválida`);
-      } else if (smtpError.message?.includes('domain') || smtpError.message?.includes('Domain')) {
-        logger.error(`Erro de domínio Resend: ${smtpError.message}`);
-      } else {
-        logger.error(`Erro ao enviar email de recuperação: ${smtpError.message || smtpError}`);
-        if (smtpError.statusCode) {
-          logger.error(`Código do erro: ${smtpError.statusCode}`);
-        }
-      }
-      // Não lançar erro para não revelar se o email existe
+      logger.error(`Erro ao enviar email de recuperação para ${user.email}: ${smtpError.message || smtpError}`);
       return;
     }
   } catch (error: any) {
