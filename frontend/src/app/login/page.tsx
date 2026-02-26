@@ -223,9 +223,6 @@ export default function LoginPage() {
 
         {/* Footer Info */}
         <div className="mt-6 text-center">
-          <p className="text-xs text-gray-500">
-            Credenciais de teste: admin@forgetech.com / admin123
-          </p>
         </div>
       </div>
     </div>
